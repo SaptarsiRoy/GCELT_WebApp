@@ -12,6 +12,9 @@ interface ButtonProps {
   small?: boolean;
   fontcolor?: string
   icon?: IconType;
+  rounded?: string;
+  hover?: string;
+  selected?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -24,6 +27,10 @@ const Button: React.FC<ButtonProps> = ({
   small,
   fontcolor,
   icon: Icon,
+  rounded,
+  hover,
+  selected,
+
 }) => {
   return ( 
     <button
@@ -32,18 +39,18 @@ const Button: React.FC<ButtonProps> = ({
       className={`
         relative
         disabled:opacity-70
-        disabled:cursor-not-allowed
-        rounded-lg
-        hover:opacity-80
+        disabled:cursor-not-allowed    
         transition
         w-full
-        ${outline ? 'bg-white dark:bg-zinc-800' : bgcolor? bgcolor : 'bg-violet-700'}
+        ${outline ? hover? hover:'bg-white dark:bg-zinc-800' : bgcolor? bgcolor : 'bg-violet-700'}
         ${outline ? 'border-black' : outlinecolor ? outlinecolor : 'border-violet-700'}
         ${outline ? 'text-black dark:text-neutral-200' : fontcolor? fontcolor : 'text-white'}
         ${small ? 'text-sm' : 'text-md'}
         ${small ? 'py-1' : 'py-3'}
         ${small ? 'font-light' : 'font-semibold'}
-        ${small ? 'border-[1px]' : 'border-2'}
+        ${small ? 'border-[1px] border-neutral-400' : 'border-2'}
+        ${rounded? rounded:'rounded-lg'}
+        ${hover? hover:'hover:opacity-80'}    
       `}
     >
       {Icon && (

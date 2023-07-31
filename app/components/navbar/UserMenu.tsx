@@ -138,6 +138,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     label="Add Student"
                                     onClick={onAdd}
                                 />
+                                <MenuItem
+                                    label="Assign Roles"
+                                    onClick={() => router.push('/roles')}
+                                />
                                 <hr />
                                 <MenuItem
                                     label="Logout"
