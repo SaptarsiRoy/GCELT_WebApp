@@ -24,7 +24,7 @@ model User {
 
   accounts Account[]
   students StudentCard[]
-  // registered RegisteredCard[]
+  teachers TeacherCard[]
 }
 
 model Account {
@@ -62,18 +62,19 @@ model StudentCard {
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
-// model RegisteredCard {
-//   id             String @id  @map("_id") @db.ObjectId
-//   Name            String
-//   email           String
-//   RollNo          String
-//   imageSrc        String
-  
-//   createdAt       DateTime @default(now())
-//   RegistrationNo  String
-//   Year            Int
-//   Semester        String
-//   Stream          String
+// model 
 
-//   user User @relation(fields: [id], references: [id], onDelete: Cascade)
-// }
+model TeacherCard {
+  id             String @id  @map("_id") @db.ObjectId
+  Name            String
+  email           String
+  imageSrc        String
+  createdAt       DateTime @default(now())
+  Year            Int                  
+  Department      String
+  Designation     String
+  Qualification   String
+  Specialization  String[]
+
+  user User @relation(fields: [id], references: [id], onDelete: Cascade)
+}
