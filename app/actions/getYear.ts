@@ -11,7 +11,7 @@ const getYear = (dataYear: number) => {
     const JoiningDate = new Date(dataYear, 6);
     const now = new Date();
     let month = monthDiff(JoiningDate, now);
-    let Year = String(1 + month/12), Sem; 
+    let Year = String((1 + month/12).toFixed(0)), Sem; 
     if (Year === '2' ) { 
         Year = Year + "nd"; 
          (month>=12 && month<18)? Sem="3rd" : Sem ="4th" ;
