@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider} from "next-themes"
+import { type ThemeProviderProps } from "next-themes/dist/types"
 
-interface ClientOnlyProps {
+interface ClientOnlyProps extends ThemeProviderProps {
   children: React.ReactNode;
 }
 
 const ClientOnly: React.FC<ClientOnlyProps> = ({ 
-  children
+  children,
+  ...props
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -19,7 +21,7 @@ const ClientOnly: React.FC<ClientOnlyProps> = ({
   if (!hasMounted) return null;
 
   return (
-    <ThemeProvider attribute='class'>
+    <ThemeProvider attribute='class' defaultTheme="system" enableSystem {...props}>
       {children}
     </ThemeProvider>
   );

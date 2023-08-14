@@ -3,9 +3,9 @@ import EmptyState from "@/app/components/EmptyState";
 import ClientOnly from "@/app/components/ClientOnly";
 
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import getAllUser, { StudentListingParams } from "@/app/actions/getAllUsers";
+import getAllUser, { StudentListingParams } from "@/app/actions/getAllUser";
 
-import RolesClient from "./rolesClient";
+import RolesClient from "./RolesClient";
 
 interface VerifyProps {
   searchParams: StudentListingParams

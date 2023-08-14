@@ -1,15 +1,20 @@
 "use client";
-
+// Global imports
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Local imports
 import { SafeListing, SafeUser } from "@/app/types";
-
-import Heading from "@/app/components/Heading";
+//Components
+import Heading from "@/app/components/ui/Heading";
 import Container from "@/app/components/Container";
-import StudentCard from "@/app/components/listings/StudentCard";
+import StudentCard from "@/app/components/customUi/cards/StudentCard";
+import { Trash2 } from "lucide-react";
+
+
+
 
 interface TripsClientProps {
   verification: SafeListing[];
@@ -21,11 +26,11 @@ const VerificationClient: React.FC<TripsClientProps> = ({
   currentUser,
 }) => {
   const router = useRouter();
-  const [deletingId, setDeletingId] = useState("");
+  const [VerifyId, setVerifyId] = useState("");
 
-  const onCancel = useCallback(
+  const onVerify = useCallback(
     (id: string) => {
-      setDeletingId(id);
+      setVerifyId(id);
       // Request
       axios
         .post(`/api/listings/${id}`)
@@ -38,11 +43,38 @@ const VerificationClient: React.FC<TripsClientProps> = ({
           console.error(error);
         })
         .finally(() => {
-          setDeletingId("");
+          setVerifyId("");
         });
     },
     [router]
   );
+
+
+  const onDelete = useCallback(
+    (id: string) => {
+      setVerifyId(id);
+      // Request
+      axios
+        .delete(`/api/listings/${id}`)
+        .then(() => {
+          toast('Student Deleted!', {icon: <Trash2/>, style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#dc2626',
+          },});
+          router.refresh();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.statusText);
+          console.error(error);
+        })
+        .finally(() => {
+          setVerifyId("");
+        });
+    },
+    [router]
+  );
+
 
   return (
     <Container>
@@ -69,8 +101,9 @@ const VerificationClient: React.FC<TripsClientProps> = ({
             data={student}
             // student={student}
             actionId={student.id}
-            onAction={onCancel}
-            disabled={deletingId === student.id}
+            onAction={onVerify}
+            onDeletion={onDelete}
+            disabled={VerifyId === student.id}
             actionLabel="Verify"
             currentUser={currentUser}
           />

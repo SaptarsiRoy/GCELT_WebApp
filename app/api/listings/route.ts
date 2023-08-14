@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import prisma from "@/app/lib/prismadb";
+import prisma from "@/lib/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 
 // we no longer have to use request methods in a switch method

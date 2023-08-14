@@ -1,4 +1,4 @@
-import prisma from "@/app/lib/prismadb";
+import prisma from "@/lib/prismadb";
 
 export interface StudentListingParams {
   id: string;
