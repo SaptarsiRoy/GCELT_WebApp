@@ -90,7 +90,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
         let acronym = data?.Name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
 
     return (
-        <Card className="w-full bg-neutral-100 dark:bg-slate-900 shadow-lg hover:-translate-y-4 transition">
+        <Card className="select-none w-full bg-neutral-100 dark:bg-slate-900 shadow-lg hover:-translate-y-4 transition">
             <CardContent className="mt-3">
                 <div className="flex justify-between space-x-4">
                     <Avatar className="w-24 h-24 aspect-square">

@@ -1,120 +1,189 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+//icons
+import { MdAlternateEmail, MdOutlineCalendarMonth } from "react-icons/md";
 
-import { Checkbox } from "@/app/components/ui/checkbox"
-import { Button } from "@/app/components/ui/button"
-import { labels, priorities, statuses } from "../data/data"
-import { Task } from "../data/schema"
-import { DataTableColumnHeader } from "./data-table-column-header"
-import { DataTableRowActions } from "./data-table-row-actions"
+// Global imports
+import { ColumnDef } from "@tanstack/react-table";
+import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+
+// Local imports
+import { DataTableColumnHeader } from "./data-table-column-header";
+import { DataTableRowActions } from "./data-table-row-actions";
+//types
+import { SafeUser } from "@/app/types";
+// Components
+import { Checkbox } from "@/app/components/ui/checkbox";
+import { Button } from "@/app/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 
 
-export const columns: ColumnDef<Task>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Task" />
-    ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
-    ),
-    cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label)
-
-      return (
-        <div className="flex space-x-2">
-          {label && <Button variant="outline">{label.label}</Button>}
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("title")}
-          </span>
-        </div>
-      )
+// We need to specify Coloumns name and also specify how rows renders
+export const columns: ColumnDef<SafeUser>[] = [
+    // checkbox
+    {
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={table.getIsAllPageRowsSelected()}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                aria-label="Select all"
+                className="translate-y-[2px]"
+            />
+        ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+                className="translate-y-[2px]"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
     },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status")
-      )
 
-      if (!status) {
-        return null
-      }
+    // avatar images
+    {
+        accessorKey: "image",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Avatar" />
+        ),
+        cell: ({ row }) => <span className="max-w-12"><Avatar className="h-8 w-8">
+            <AvatarImage src={row.getValue("image") || '/avatars/01.png'} alt="@shadcn" />
+            <AvatarFallback>SC</AvatarFallback>
+        </Avatar></span>,
+        enableSorting: false,
+        enableHiding: false,
+    },
 
-      return (
-        <div className="flex w-[100px] items-center">
-          {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
-        </div>
-      )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
-  },
-  {
-    accessorKey: "priority",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
-    ),
-    cell: ({ row }) => {
-      const priority = priorities.find(
-        (priority) => priority.value === row.getValue("priority")
-      )
 
-      if (!priority) {
-        return null
-      }
+    // names
+    {
+        accessorKey: "name",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="User" />
+        ),
+        cell: ({ row }) => {
+            return (
+                <span className="max-w-[80px] truncate font-medium">
+                    {row.getValue("name")}
+                </span>
+            )
+        },
+    },
 
-      return (
-        <div className="flex items-center">
-          {priority.icon && (
-            <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{priority.label}</span>
-        </div>
-      )
+
+    // email 
+    {
+        accessorKey: "email",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="email" />
+        ),
+        cell: ({ row }) => {
+
+            return (
+                <div className="flex w-[250px] items-center truncate">
+                    <MdAlternateEmail className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <span>{row.getValue("email")}</span>
+                </div>
+            )
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id))
+        },
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+
+    // created At 
+    {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="created At" />
+        ),
+        cell: ({ row }) => {
+            return (
+                <div className="flex  w-[250px] items-center">
+                    <MdOutlineCalendarMonth className="mr-2 h-5 w-5 text-muted-foreground" />
+                    <span>{row.getValue("createdAt")}</span>
+                </div>
+            )
+        },
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id))
+        },
     },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
-  },
+
+    // Roles Button 
+    {
+        id:"role",
+        header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Roles" />
+        ),
+        cell: ({ row }) => {
+            const user = row.original
+            const [assignRoleId, setAssignRoleId] = useState("");
+            const router = useRouter();
+            const onAssign = useCallback(
+                (id: string, role: string) => {
+                    setAssignRoleId(id);
+                    const data = { role };
+                    console.log(data);
+                    // Request
+                    axios
+                        .post(`/api/role/${id}`, data)
+                        .then(() => {
+                            toast.success("Successfully Role assigned to user ");
+                            router.refresh();
+                        })
+                        .catch((error) => {
+                            toast.error(error?.response?.statusText);
+                            console.error(error);
+                        })
+                        .finally(() => {
+                            setAssignRoleId("");
+                        });
+                },
+                [router]
+            );
+
+
+
+            return (
+                <div className="col-span-3 flex flex-row gap-0 text-base">
+                    <Button
+                        variant={`${user.role === 'student'?"default":"outline"}`}
+                        className={`${user.role === 'student'?"bg-violet-700 dark:text-white":"bg-transparent"}
+                        rounded-l-full hover:bg-violet-700 hover:border-violet-700`}
+                        size="sm"
+                        onClick={() => onAssign(user.id, 'student')}
+                    >Student</Button>
+                    <Button
+                        variant={`${user.role === 'teacher'?"default":"outline"}`}
+                        className={`${user.role === 'teacher'?"bg-violet-700 dark:text-white":"bg-transparent"}
+                        rounded-none hover:bg-violet-700 hover:border-violet-700`}
+                        size="sm"
+                        onClick={() => onAssign(user.id, 'teacher')}
+                    >Teacher</Button>
+                    <Button
+                        variant={`${user.role === 'admin'?"default":"outline"}`}
+                        className={`${user.role === 'admin'?"bg-violet-700 dark:text-white":"bg-transparent"}
+                        rounded-r-full hover:bg-violet-700 hover:border-violet-700`}
+                        size="sm"
+                        onClick={() => onAssign(user.id, 'admin')}
+                    >Admin</Button>
+                </div>
+            )
+        },
+        enableSorting: false,
+        enableHiding: false,
+    },
+
+    // actions
+    {
+        id: "actions",
+        cell: ({ row }) => <DataTableRowActions row={row} />,
+    },
 ]

@@ -1,7 +1,9 @@
 'use client';
 //icons
-import { Settings, LogIn, LogOut, Menu, UserPlus2 } from "lucide-react";
+import { Settings, LogIn, LogOut, Menu, UserPlus2, CalendarCheck } from "lucide-react";
 import { TbCircleFilled } from "react-icons/tb";
+import { PiStudentBold , PiExamDuotone , PiChalkboardTeacherDuotone } from "react-icons/pi"
+
 
 // Global import
 import { signOut } from "next-auth/react";
@@ -38,7 +40,7 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
 
     const registerModal = useRegisterModal();
     const router = useRouter();
-    
+
     return (
         <div className="relative">
             <div className="flex flex-row items-center gap-3">
@@ -108,8 +110,22 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
 
                             <DropdownMenuSeparator />
                         </>}
+                        <DropdownMenuGroup className="block lg:hidden text-neutral-600">
+                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                                <PiStudentBold className="mr-2 h-4 w-4" /> Students
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                                <PiChalkboardTeacherDuotone className="mr-2 h-5 w-5" /> Faculty
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                                <CalendarCheck className="mr-2 h-4 w-4" /> Routine
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                                <PiExamDuotone className="mr-2 h-5 w-5" /> Exams
+                            </DropdownMenuItem>
 
-                        <DropdownMenuGroup className="text-neutral-700 my-3">
+                        </DropdownMenuGroup>
+                        <DropdownMenuGroup className="text-neutral-600 dark:text-neutral-500 my-3">
                             {currentUser ? currentUser.role === "admin" ? (
                                 <>
                                     <DropdownMenuItem onClick={() => router.push('/roles')}>
@@ -150,9 +166,8 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                                         <UserPlus2 className="mr-2 h-4 w-4" />
                                         SignUp
                                     </DropdownMenuItem></>
-                                )
+                            )
                             }
-
 
                         </DropdownMenuGroup>
 

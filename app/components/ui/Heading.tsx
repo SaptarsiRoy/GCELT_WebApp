@@ -18,7 +18,7 @@ const Heading: React.FC<HeadingProps> = ({
   center
 }) => {
   return ( 
-    <div className={`hidden md:block ${center ? 'text-center' : 'text-start'} `} >
+    <div className={`hidden sm:block ${center ? 'text-center' : 'text-start'} `} >
       <div className="text-2xl font-bold">
         {title}
       </div>

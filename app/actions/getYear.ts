@@ -28,6 +28,10 @@ const getYear = (dataYear: number) => {
         Year = Year + "st";
         (month>=0 && month<6)? Sem="1st" : Sem ="2nd" ;
     }
+    else if (parseInt(Year) >= 4){
+        Year = "Alumni";
+        Sem= "BTech Eng";
+    }
     return [Year,Sem] as const;
 }
 export default getYear;

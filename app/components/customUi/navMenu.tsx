@@ -27,34 +27,34 @@ export function NavMenu({
     // Details of Nav bar Routings
     const routes = [
         {
-            href: `/${params.storeId}/settings`,
+            href: `/${params.storeId}/students`,
             label: 'Students',
-            active: pathname === `/${params.storeId}/settings`
+            active: pathname === `/${params.storeId}/students`
         },
         {
-            href: `/${params.storeId}/settings`,
+            href: `/${params.storeId}/faculty`,
             label: 'Faculty',
-            active: pathname === `/${params.storeId}/settings`
+            active: pathname === `/${params.storeId}/faculty`
         },
         {
-            href: `/${params.storeId}/settings`,
+            href: `/${params.storeId}/routine`,
             label: 'Routine',
-            active: pathname === `/${params.storeId}/settings`
+            active: pathname === `/${params.storeId}/routine`
         },
         {
-            href: `/${params.storeId}/settings`,
+            href: `/${params.storeId}/exams`,
             label: 'Exams',
-            active: pathname === `/${params.storeId}/settings`
+            active: pathname === `/${params.storeId}/exams`
         }
     ];
 
     return (
         // It is used to merge the className we passed alomg with classname we include here : cn provided by shadcn ui
-        <NavigationMenu>
+        <NavigationMenu className="hidden lg:block">
             <NavigationMenuList>
                 <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)}>
                     {routes.map((route) => (
-                        <NavigationMenuItem>
+                        <NavigationMenuItem key={route.href}>
                         <Link
                             key={route.href}
                             href={route.href}

@@ -12,7 +12,8 @@ const Logo = () => {
     const { resolvedTheme, setTheme } = useTheme();
 
     return (
-        <div className="flex 
+        <div className="
+        flex 
         flex-row 
         items-center 
         justify-between

@@ -5,7 +5,7 @@ import ClientOnly from "@/app/components/ClientOnly";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import getAllUser, { StudentListingParams } from "@/app/actions/getAllUser";
 
-import RolesClient from "./RolesClient";
+import RolesClient from "./rolesClient";
 
 interface VerifyProps {
   searchParams: StudentListingParams
