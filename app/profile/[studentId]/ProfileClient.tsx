@@ -1,13 +1,13 @@
 'use client';
 
 //icons
-import { MdAlternateEmail, MdLockOutline, MdOutlineCalendarMonth, MdKeyboardBackspace } from "react-icons/md"
-import { HiOutlineUser, HiOutlineDocumentSearch, HiBadgeCheck, HiOutlineClock } from "react-icons/hi"
+import { MdAlternateEmail, MdOutlineCalendarMonth, MdKeyboardBackspace } from "react-icons/md"
+import { HiOutlineUser, HiOutlineDocumentSearch, HiOutlineClock } from "react-icons/hi"
 import { Tb123 } from "react-icons/tb"
 import { BsLinkedin, BsGithub, BsMedium } from "react-icons/bs";
 import { FiPhoneCall } from "react-icons/fi";
 import { SiLeetcode } from "react-icons/si";
-import { PiGraduationCapDuotone } from "react-icons/pi";
+import { PiGraduationCapDuotone, PiWarningOctagonBold } from "react-icons/pi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 
 // Global import 
@@ -57,7 +57,7 @@ const editProfileSchema = z.object({
     RollNo: z.number().min(11),
     RegistrationNo: z.number().min(16),
     Year: z.number().min(4),
-    Semester: z.number().min(4),
+    Semester: z.string().min(1),
     Stream: z.string({
         required_error: "Please select Stream You are Enrolled in.",
     }),
@@ -84,8 +84,8 @@ const StudentClient: React.FC<ProfileClientProps> = ({
             email: Studentlist.email,
             RollNo: Number(Studentlist.RollNo),
             RegistrationNo: Number(Studentlist.RegistrationNo),
-            Year: Studentlist.Year,
-            Semester: Number(Studentlist.Semester),
+            Year: Number(Studentlist.Year),
+            Semester: Studentlist.Semester,
             Stream: Studentlist.Stream,
         },
     })
@@ -99,16 +99,36 @@ const StudentClient: React.FC<ProfileClientProps> = ({
     //         shouldValidate: true
     //     })
     // }
+    const id:String = Studentlist.id;
+
+    const onSubmit = async (data: z.infer<typeof editProfileSchema>) => {
+        setIsLoading(true);
+        await axios.post(`/api/listings/student/edit/${Studentlist?.id}`, data)
+            .then(() => {
+                toast.success('Updated Successful!');
+                router.refresh();
+                form.reset();
+            })
+            .catch(() => {
+                toast.error('Something went wrong.');
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
+    }
+
+
+
 
     return (
         <Container>
             <Form {...form} >
-                <form className="" onSubmit={form.handleSubmit(() => { })}>
+                <form className="" onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="max-w-screen-lg mx-auto">
                         <div className="grid grid-cols-1 md:grid-cols-8 md:gap-10 mt-6">
 
                             <div className="col-span-4 flex flex-col gap-4 pr-18">
-                                
+
                                 {/*  Div for Avatar and Constant Details */}
                                 <div className="flex flex-row gap-x-20">
                                     <Avatar className="w-48 h-48 aspect-square">
@@ -130,14 +150,18 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                 <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
                                                 Update
                                             </Button>
-                                        </span>                                       
-                                        {Studentlist.verified? (
-                                        <div className=""></div>
-                                        ):(
-                                        <></>
+                                        </span>
+                                        {Studentlist.verified ? (
+                                            <div className="rounded-md text-green-500 dark:text-green-600 flex gap-2 text-lg items-center">
+                                                <VscVerifiedFilled size={28} /> Verified Student
+                                            </div>
+                                        ) : (
+                                            <div className="rounded-md text-red-600 dark:text-red-700 flex gap-2 text-lg items-center">
+                                                <PiWarningOctagonBold /> Need Verification
+                                            </div>
                                         )}
                                     </div>
-                                    
+
                                 </div>
 
                                 {/*  Area for Social Accounts Details and inputs */}
@@ -152,7 +176,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
 
 
                             <div className="order-first mb-10 md:order-last md:col-span-4 ">
-                                
+
                                 {/* Div for Personal Important Details */}
                                 <div className="flex flex-col gap-2">
                                     <Heading
@@ -197,7 +221,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                     <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Roll Number</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required placeholder="Name" {...field} />
+                                                        <Input required type="number" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -211,7 +235,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                     <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Registration Number</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input placeholder="Name" {...field} />
+                                                        <Input type="number" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -227,7 +251,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                     <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required placeholder="Name" {...field} />
+                                                        <Input required type="number" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -261,7 +285,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Computer Science and Engineering">Computer Science and Engineering</SelectItem>
+                                                        <SelectItem value="Computer Science Engineering">Computer Science and Engineering</SelectItem>
                                                         <SelectItem value="Information Technology">Information Technology</SelectItem>
                                                         <SelectItem value="Leather Technology">Leather Technology</SelectItem>
                                                     </SelectContent>

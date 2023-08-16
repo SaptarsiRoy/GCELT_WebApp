@@ -1,7 +1,7 @@
 import prisma from "@/lib/prismadb";
 
 
-export default async function getListingById(
+export default async function getStudentById(
     Id: any
 ) {
     try {

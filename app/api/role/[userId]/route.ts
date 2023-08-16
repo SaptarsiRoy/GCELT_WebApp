@@ -4,13 +4,14 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
 
 interface IParams {
-    userId?: string;
+    userId?: string | undefined | null;
 }
 
 export async function POST(
     request: Request,
     { params }: { params: IParams }
 ) {
+
     const currentUser = await getCurrentUser();
 
     // Check if current user exist or not
@@ -22,7 +23,6 @@ export async function POST(
     if (currentUser?.role === "admin") {
         // Retrieve the userId passed as parameters
         const { userId } = params;
-        console.log(userId);
         // If Valid userId Provided or not
         if (!userId || typeof userId !== "string") {
             throw new Error("Invalid ID");

@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 // Local imports
+// Components
 import { Button } from '@/app/components/ui/button'
 import {
     Form,
@@ -53,7 +54,7 @@ const LogInModal = () => {
     // To maintain session as need to redirect when singin process is done 
     const session = useSession();
     // router from next navigation to push routes path 
-    const router = useRouter()
+    const router = useRouter();
     // state to control variant of form
     const [variant, setvariant] = useState<Variant>('LOGIN');
     // state to control Loading condition  , disable trigger when so submission take place
@@ -105,8 +106,9 @@ const LogInModal = () => {
                 .then((callback) => {
                     if (callback?.ok) {
                         toast.success('Logged in');
-                        registerModal.onClose();
-                        router.refresh()
+                        //To check the url's storeid if present inside datanase and if present then fetch it
+                        registerModal.onClose();                        
+                        router.refresh() 
                     }
 
                     if (callback?.error) {
@@ -127,7 +129,7 @@ const LogInModal = () => {
                 .then(() => {
                     toast.success('Registered!');
                     registerModal.onClose();
-                    router.refresh();
+                    router.push('/register');
                 })
                 .catch((error) => {
                     toast.error(error);

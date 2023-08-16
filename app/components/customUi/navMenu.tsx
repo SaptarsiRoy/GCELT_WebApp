@@ -27,9 +27,9 @@ export function NavMenu({
     // Details of Nav bar Routings
     const routes = [
         {
-            href: `/${params.storeId}/students`,
+            href: `/`,
             label: 'Students',
-            active: pathname === `/${params.storeId}/students`
+            active: pathname === `/`
         },
         {
             href: `/${params.storeId}/faculty`,

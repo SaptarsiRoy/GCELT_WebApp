@@ -29,12 +29,12 @@ import {
     AvatarImage
 } from "@/app/components/ui/avatar";
 import { Button } from "@/app/components/ui/button";
-import ClientOnly from "@/app/components/ClientOnly";
 import {
     Card,
     CardContent,
     CardFooter
 } from "@/app/components/ui/card";
+import { LinkDialog } from "@/app/components/modals/linkDialog";
 
 
 
@@ -177,12 +177,13 @@ const StudentCard: React.FC<StudentCardProps> = ({
                         Registration No: {data?.RegistrationNo}
                     </div>
                 </div>
-                <span className="pt-5 flex flex-col absolute gap-3 right-3 ">
-                    <FiPhoneCall size={16} onClick={() => { }} />
-                    <BsLinkedin size={16} onClick={() => { }} />
-                    <BsGithub size={16} onClick={() => { }} />
-                    <SiLeetcode size={16} onClick={() => { }} />
-                    <HiOutlineDocumentSearch size={18} onClick={() => { }} />
+                <span className="pt-5 flex flex-col absolute gap-2 right-3 ">
+                    <LinkDialog title="Phone Number" description="copy" icons={<FiPhoneCall size={16}/>}>Link</LinkDialog>
+                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16}/>}/>
+                    <LinkDialog title="Github Account" description="copy" icons={<BsGithub size={16} />}/>
+                    <LinkDialog title="Leetcode Account" description="copy" icons={<SiLeetcode size={16} />}/>
+                    <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />}/>
+
                 </span>
             </CardFooter>
         </Card>

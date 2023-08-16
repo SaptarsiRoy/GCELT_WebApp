@@ -125,12 +125,14 @@ export const columns: ColumnDef<SafeUser>[] = [
         cell: ({ row }) => {
             const user = row.original
             const [assignRoleId, setAssignRoleId] = useState("");
+            const [isLoading, setIsLoading] = useState(false);
             const router = useRouter();
+
             const onAssign = useCallback(
                 (id: string, role: string) => {
                     setAssignRoleId(id);
+                    setIsLoading(true);
                     const data = { role };
-                    console.log(data);
                     // Request
                     axios
                         .post(`/api/role/${id}`, data)
@@ -144,6 +146,7 @@ export const columns: ColumnDef<SafeUser>[] = [
                         })
                         .finally(() => {
                             setAssignRoleId("");
+                            setIsLoading(false);
                         });
                 },
                 [router]

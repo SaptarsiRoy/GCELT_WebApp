@@ -33,7 +33,7 @@ const VerificationClient: React.FC<TripsClientProps> = ({
       setVerifyId(id);
       // Request
       axios
-        .post(`/api/listings/${id}`)
+        .post(`/api/listings/student/${id}`)
         .then(() => {
           toast.success("Student Verfied Successfully");
           router.refresh();
@@ -55,7 +55,7 @@ const VerificationClient: React.FC<TripsClientProps> = ({
       setVerifyId(id);
       // Request
       axios
-        .delete(`/api/listings/${id}`)
+        .delete(`/api/listings/student/${id}`)
         .then(() => {
           toast('Student Deleted!', {icon: <Trash2/>, style: {
             borderRadius: '10px',
