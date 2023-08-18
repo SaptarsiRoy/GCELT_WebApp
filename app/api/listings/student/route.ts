@@ -22,15 +22,14 @@ export async function POST(request: Request) {
         RollNo,
         RegistrationNo,
         Year,
-        Semester,
         Stream,
     } = body;
 
-    Object.keys(body).forEach((value: any) => {
-        if (!body[value]) {
-            NextResponse.error();
-        }
-    });
+    // Object.keys(body).forEach((value: any) => {
+    //     if (!body[value]) {
+    //         NextResponse.error();
+    //     }
+    // });
 
     // Now insert into database table RegisteredCard as a new student and pass the retrieved details
     const verificationListing = await prisma.studentCard.create({
@@ -38,11 +37,11 @@ export async function POST(request: Request) {
             imageSrc,
             Name,
             email,
-            RollNo,
-            RegistrationNo,
+            RollNo: String(RollNo),
+            RegistrationNo: String(RegistrationNo),
             Year: parseInt(Year, 10),
-            Semester,
-            Stream: Stream.label,
+            Semester:"1st",
+            Stream: Stream,
             id: currentUser.id,
         },
     });

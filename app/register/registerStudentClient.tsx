@@ -1,14 +1,13 @@
 'use client';
 
 //icons
-import { MdAlternateEmail, MdOutlineCalendarMonth, MdKeyboardBackspace } from "react-icons/md"
-import { HiOutlineUser, HiOutlineDocumentSearch, HiOutlineClock } from "react-icons/hi"
+import { MdAlternateEmail, MdLockOutline, MdOutlineCalendarMonth } from "react-icons/md"
+import { HiOutlineUser, HiOutlineDocumentSearch } from "react-icons/hi"
 import { Tb123 } from "react-icons/tb"
 import { BsLinkedin, BsGithub, BsMedium } from "react-icons/bs";
 import { FiPhoneCall } from "react-icons/fi";
 import { SiLeetcode } from "react-icons/si";
-import { PiGraduationCapDuotone, PiWarningOctagonBold } from "react-icons/pi";
-import { VscVerifiedFilled } from "react-icons/vsc";
+import { PiGraduationCapDuotone } from "react-icons/pi";
 
 // Global import 
 import axios from "axios";
@@ -25,7 +24,7 @@ import {
 } from 'react-hook-form';
 
 // types safety
-import { SafeListing, SafeUser } from "@/app/types";
+import { SafeUser } from "@/app/types";
 
 //components
 import Container from "@/app/components/Container";
@@ -48,49 +47,44 @@ import {
 } from "@/app/components/ui/select"
 import Heading from "@/app/components/ui/Heading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
+import ImageUpload from "@/app/components/modals/ImageUpload";
 
 
-const editProfileSchema = z.object({
+const studentRegistration = z.object({
     imageSrc: z.string().url().optional(),
     Name: z.string().min(3), //.optional().transform(e => e === "" ? undefined : e) , // atleast 3 character is required to properly name our store
     email: z.string().email(),
     RollNo: z.coerce.number().min(11),
     RegistrationNo: z.coerce.number().min(16),
     Year: z.coerce.number().min(4),
-    Semester: z.string().min(1),
     Stream: z.string({
         required_error: "Please select Stream You are Enrolled in.",
-    }),
+    }).min(10),
 });
 
 interface ProfileClientProps {
-    Studentlist: SafeListing;
     currentUser?: SafeUser | null;
 }
 
-const StudentClient: React.FC<ProfileClientProps> = ({
-    Studentlist,
+const RegisterStudentClient: React.FC<ProfileClientProps> = ({
     currentUser
 }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
 
-    const form = useForm<z.infer<typeof editProfileSchema>>({
-        resolver: zodResolver(editProfileSchema),
+    const form = useForm<z.infer<typeof studentRegistration>>({
+        resolver: zodResolver(studentRegistration),
         defaultValues: {
-            imageSrc: Studentlist.imageSrc,
-            Name: Studentlist.Name,
-            email: Studentlist.email,
-            RollNo: Number(Studentlist.RollNo),
-            RegistrationNo: Number(Studentlist.RegistrationNo),
-            Year: Number(Studentlist.Year),
-            Semester: Studentlist.Semester,
-            Stream: Studentlist.Stream,
+            imageSrc: "",
+            Name: "",
+            email: String(currentUser?.email),
+            RollNo: 0,
+            RegistrationNo: 0,
+            Year: 1999,
+            Stream: "",
         },
     })
-    const Stream = form.watch('Stream');
-    const imageSrc = form.watch('imageSrc');
 
     // const setCustomValue = (id: string, value: any) => {
     //     form.setValue(id, value, {
@@ -99,11 +93,11 @@ const StudentClient: React.FC<ProfileClientProps> = ({
     //         shouldValidate: true
     //     })
     // }
-    const id:String = Studentlist.id;
+    const imageSrc = form.watch('imageSrc');
 
-    const onSubmit = async (data: z.infer<typeof editProfileSchema>) => {
+    const onSubmit = async (data: z.infer<typeof studentRegistration>) => {
         setIsLoading(true);
-        await axios.post(`/api/listings/student/edit/${Studentlist?.id}`, data)
+        await axios.post('/api/listings/student', data)
             .then(() => {
                 toast.success('Updated Successful!');
                 router.refresh();
@@ -117,9 +111,6 @@ const StudentClient: React.FC<ProfileClientProps> = ({
             })
     }
 
-
-
-
     return (
         <Container>
             <Form {...form} >
@@ -131,36 +122,47 @@ const StudentClient: React.FC<ProfileClientProps> = ({
 
                                 {/*  Div for Avatar and Constant Details */}
                                 <div className="flex flex-row gap-x-20">
-                                    <Avatar className="w-48 h-48 aspect-square">
-                                        <AvatarImage src={imageSrc} />
-                                        <AvatarFallback>ST</AvatarFallback>
-                                    </Avatar>
+                                    <FormField
+                                        control={form.control}
+                                        name="imageSrc"
+                                        render={({ field, formState }) => (
+                                            <FormItem className="w-full">
+                                                <FormControl>
+                                                    {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                    <ImageUpload
+                                                        disabled={isLoading}
+                                                        onChange={(url) => field.onChange(url)}
+                                                        value={field.value}
+                                                        justify_place="justify-center items-center"
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                    <div className="flex flex-col gap-3 ml-5 w-1/2">
-                                        <span className="flex flex-row gap-3 ">
-                                            <Button variant="destructive" onClick={() => router.push('/')}
-                                                className="relative inline-flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium  transition duration-300 ease-out border-2 dark:border-red-900 shadow-md group"
-                                                disabled={isLoading}
-                                            >
-                                                <span className="absolute inset-100 flex items-center justify-center w-full h-full text-white duration-300 translate-x-full bg-red-600 group-hover:translate-x-0 ease"><MdKeyboardBackspace size={26} /></span>
-                                                <span className="absolute flex items-center justify-center w-full h-full  transition-all duration-300 transform group-hover:-translate-x-full ease">Back</span>
-                                                <span className="relative invisible">Back</span>
-                                            </Button>
+                                    <div className="flex flex-col gap-3 w-1/2">
+                                        <span className="flex flex-row gap-3 mb-5">
                                             <Button className="w-2/3 rounded px-5 py-2.5 overflow-hidden group bg-green-500 relative hover:bg-gradient-to-r hover:from-green-500 hover:to-green-400 text-white transition-all ease-out duration-300"
                                                 type="submit" disabled={isLoading} >
-                                                <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease" />
-                                                Update
+                                                <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                                                Register
                                             </Button>
                                         </span>
-                                        {Studentlist.verified ? (
-                                            <div className="rounded-md text-green-500 dark:text-green-600 flex gap-2 text-lg items-center">
-                                                <VscVerifiedFilled size={28} /> Verified Student
-                                            </div>
-                                        ) : (
-                                            <div className="rounded-md text-red-600 dark:text-red-700 flex gap-2 text-lg items-center">
-                                                <PiWarningOctagonBold /> Need Verification
-                                            </div>
-                                        )}
+                                        <FormField
+                                            control={form.control}
+                                            name="Year"
+                                            render={({ field, formState }) => (
+                                                <FormItem className="w-full">
+                                                    <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining</FormLabel>
+                                                    <FormControl>
+                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                        <Input required type="number" {...field} disabled={isLoading}/>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
 
                                 </div>
@@ -168,7 +170,6 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                 {/*  Area for Social Accounts Details and inputs */}
                                 <Heading
                                     heading1="Your Social Handles"
-                                    subtitle="Make Changes to Update Your Profile's Social Handles"
                                 />
 
 
@@ -182,7 +183,6 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                 <div className="flex flex-col gap-2">
                                     <Heading
                                         title="Your Personal Profile"
-                                        subtitle="Make Changes to Update Your Profile's Academic Details"
                                     />
                                     <FormField
                                         control={form.control}
@@ -192,7 +192,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                 <FormLabel className="flex gap-3 items-center"><HiOutlineUser size={16} />Name</FormLabel>
                                                 <FormControl>
                                                     {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input placeholder="Name" {...field} disabled={isLoading}/>
+                                                    <Input type="text" placeholder="Name" {...field} disabled={isLoading}/>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -243,36 +243,6 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                             )}
                                         />
                                     </div>
-                                    <div className="flex flex-row gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="Year"
-                                            render={({ field, formState }) => (
-                                                <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining</FormLabel>
-                                                    <FormControl>
-                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required type="number" {...field} disabled={isLoading}/>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="Semester"
-                                            render={({ field }) => (
-                                                <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><HiOutlineClock size={18} />Semester</FormLabel>
-                                                    <FormControl>
-                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input placeholder="Name" {...field} disabled={isLoading}/>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
                                     <FormField
                                         control={form.control}
                                         name="Stream"
@@ -286,7 +256,7 @@ const StudentClient: React.FC<ProfileClientProps> = ({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Computer Science Engineering">Computer Science and Engineering</SelectItem>
+                                                        <SelectItem value="Computer Science Engineering">Computer Science Engineering</SelectItem>
                                                         <SelectItem value="Information Technology">Information Technology</SelectItem>
                                                         <SelectItem value="Leather Technology">Leather Technology</SelectItem>
                                                     </SelectContent>
@@ -307,4 +277,4 @@ const StudentClient: React.FC<ProfileClientProps> = ({
     );
 }
 
-export default StudentClient;
+export default RegisterStudentClient;
