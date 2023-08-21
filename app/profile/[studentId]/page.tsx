@@ -27,7 +27,7 @@ const ProfilePage = async ({ params }: { params: IParams }) => {
   return (
     <ClientOnly>
       <ProfileClient
-        listing={listing}
+        Studentlist={listing}
         currentUser={currentUser}
       />
     </ClientOnly>

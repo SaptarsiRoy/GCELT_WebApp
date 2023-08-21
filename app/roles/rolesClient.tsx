@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 
 import { SafeListing, SafeUser } from "@/app/types";
 
-import Heading from "@/app/components/Heading";
+import Heading from "@/app/components/ui/Heading";
 import Container from "@/app/components/Container";
-import UserList from "@/app/components/listings/UserList";
+import { UserList } from "@/app/components/customUi/cards/UserList";
+import { columns } from "@/app/components/customUi/dataTable/columns"
 
 interface RolesClientProps {
   allUsers: SafeUser[];
@@ -43,7 +44,7 @@ const RolesClient: React.FC<RolesClientProps> = ({
     },
     [router]
   );
-
+  console.log(allUsers);
   return (
     <Container>
       <Heading
@@ -58,7 +59,7 @@ const RolesClient: React.FC<RolesClientProps> = ({
           gap-3
         "
       >
-        {allUsers.map((user: any) => (
+        {/* {allUsers.map((user: any) => (
           <UserList
             key={user.id}
             data={user}
@@ -69,7 +70,8 @@ const RolesClient: React.FC<RolesClientProps> = ({
             actionLabel="Verify"
             currentUser={currentUser}
           />
-        ))}
+        ))} */}
+        <UserList data={allUsers} columns={columns}/>
       </div>
     </Container>
   );

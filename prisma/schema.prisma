@@ -74,7 +74,10 @@ model TeacherCard {
   Department      String
   Designation     String
   Qualification   String
-  Specialization  String[]
+  Specialization  String
+  linkedInurl     String
+  resumeurl       String
+  verified        Boolean  @default(false)
 
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 }

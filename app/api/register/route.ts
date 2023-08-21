@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
-import prisma from "@/app/lib/prismadb";
+import prisma from "@/lib/prismadb";
 
 // we no longer have to use request methods in a switch method 
 // we can create out custom POST request method
