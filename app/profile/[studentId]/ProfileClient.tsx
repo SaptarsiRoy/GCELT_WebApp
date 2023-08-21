@@ -68,7 +68,7 @@ interface ProfileClientProps {
     currentUser?: SafeUser | null;
 }
 
-const StudentClient: React.FC<ProfileClientProps> = ({
+const ProfileClient: React.FC<ProfileClientProps> = ({
     Studentlist,
     currentUser
 }) => {
@@ -307,4 +307,4 @@ const StudentClient: React.FC<ProfileClientProps> = ({
     );
 }
 
-export default StudentClient;
+export default ProfileClient;

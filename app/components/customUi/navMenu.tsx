@@ -32,19 +32,19 @@ export function NavMenu({
             active: pathname === `/`
         },
         {
-            href: `/${params.storeId}/faculty`,
+            href: `/faculty`,
             label: 'Faculty',
-            active: pathname === `/${params.storeId}/faculty`
+            active: pathname === `/faculty`
         },
         {
-            href: `/${params.storeId}/routine`,
+            href: `/routine`,
             label: 'Routine',
-            active: pathname === `/${params.storeId}/routine`
+            active: pathname === `/routine`
         },
         {
-            href: `/${params.storeId}/exams`,
+            href: `/exams`,
             label: 'Exams',
-            active: pathname === `/${params.storeId}/exams`
+            active: pathname === `/exams`
         }
     ];
 

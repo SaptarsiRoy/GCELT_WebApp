@@ -64,7 +64,11 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                         <div className="flex flex-row justify-between items-center gap-2">
                             <TbCircleFilled className="text-green-500" />Admin Portal
                         </div>
-                    ) : (
+                    ) : currentUser.role === "teacher"? (
+                        <div className="flex flex-row justify-between items-center gap-2">
+                            <TbCircleFilled className="text-green-500" />Faculty Portal
+                        </div>
+                    ) :(
                         <div className="flex flex-row justify-between items-center gap-2">
                             <TbCircleFilled className="text-green-500" />Student Portal
                         </div>
@@ -111,10 +115,10 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                             <DropdownMenuSeparator />
                         </>}
                         <DropdownMenuGroup className="block lg:hidden text-neutral-600">
-                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                            <DropdownMenuItem onClick={() => router.push('/')}>
                                 <PiStudentBold className="mr-2 h-4 w-4" /> Students
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push('/roles')}>
+                            <DropdownMenuItem onClick={() => router.push('/faculty')}>
                                 <PiChalkboardTeacherDuotone className="mr-2 h-5 w-5" /> Faculty
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push('/roles')}>

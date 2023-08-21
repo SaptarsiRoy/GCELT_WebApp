@@ -7,12 +7,12 @@ import { SiLeetcode } from "react-icons/si";
 import { PiGraduationCapDuotone } from "react-icons/pi";
 import { HiOutlineDocumentSearch, HiBadgeCheck, HiOutlineClock } from "react-icons/hi";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import {Trash2} from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 
 // Global imports
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useState } from "react";
 
 
 // Local imports
@@ -35,6 +35,7 @@ import {
     CardFooter
 } from "@/app/components/ui/card";
 import { LinkDialog } from "@/app/components/modals/linkDialog";
+import { ConfirmationModal } from "@/app/components/modals/ConfirmationModal";
 
 
 
@@ -59,7 +60,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 }) => {
 
     const [Year, Sem] = getYear(data?.Year)
-
+    const [open, setOpen] = useState(false);
     const router = useRouter();
 
 
@@ -75,19 +76,19 @@ const StudentCard: React.FC<StudentCardProps> = ({
 
 
 
-        const handleDelete = useCallback(
-            (e: React.MouseEvent<HTMLButtonElement>) => {
-                e.stopPropagation();
-    
-                if (disabled) {
-                    return;
-                }    
-                onDeletion?.(actionId)
-            }, [disabled, onDeletion, actionId]);
+    const handleDelete = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>) => {
+            e.stopPropagation();
+
+            if (disabled) {
+                return;
+            }
+            onDeletion?.(actionId)
+        }, [disabled, onDeletion, actionId]);
 
 
-        //acronym of Name
-        let acronym = data?.Name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
+    //acronym of Name
+    let acronym = data?.Name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '');
 
     return (
         <Card className="select-none w-full bg-neutral-100 dark:bg-slate-900 shadow-lg hover:-translate-y-4 transition">
@@ -101,21 +102,26 @@ const StudentCard: React.FC<StudentCardProps> = ({
                         w-full overflow-hidden ">
 
                         {(currentUser?.role === 'admin' || currentUser?.id === data.id) &&
-                            <div className="mb-3 w-full rounded-md justify-end items-center flex flex-row gap-2">                                
+                            <div className="mb-3 w-full rounded-md justify-end items-center flex flex-row gap-2">
                                 {onAction && actionLabel && (
-                                    <>
-                                    <Button variant="ghost" size="sm" 
-                                            className="text-red-600 p-0"
-                                            onClick={handleDelete}
-                                        >
-                                        <Trash2 size={20}/>
-                                    </Button>
                                     <Button
                                         size="xs"
                                         disabled={disabled}
                                         onClick={handleVerify}
-                                    >{actionLabel}</Button></>
+                                    >{actionLabel}</Button>
                                 )}
+                                <ConfirmationModal
+                                    isOpen={open}
+                                    onClose={() => setOpen(false)}
+                                    onConfirm={()=>{handleDelete}}
+                                    loading={disabled}
+                                />
+                                <Button variant="ghost" size="sm"
+                                    className="text-red-600 p-0"
+                                    onClick={() => setOpen(true)}
+                                >
+                                    <Trash2 size={20} />
+                                </Button>
                                 <Button
                                     variant="secondary"
                                     size="xs"
@@ -178,11 +184,11 @@ const StudentCard: React.FC<StudentCardProps> = ({
                     </div>
                 </div>
                 <span className="pt-5 flex flex-col absolute gap-2 right-3 ">
-                    <LinkDialog title="Phone Number" description="copy" icons={<FiPhoneCall size={16}/>}>Link</LinkDialog>
-                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16}/>}/>
-                    <LinkDialog title="Github Account" description="copy" icons={<BsGithub size={16} />}/>
-                    <LinkDialog title="Leetcode Account" description="copy" icons={<SiLeetcode size={16} />}/>
-                    <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />}/>
+                    <LinkDialog title="Phone Number" description="copy" icons={<FiPhoneCall size={16} />}>Link</LinkDialog>
+                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16} />} />
+                    <LinkDialog title="Github Account" description="copy" icons={<BsGithub size={16} />} />
+                    <LinkDialog title="Leetcode Account" description="copy" icons={<SiLeetcode size={16} />} />
+                    <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />} />
 
                 </span>
             </CardFooter>
