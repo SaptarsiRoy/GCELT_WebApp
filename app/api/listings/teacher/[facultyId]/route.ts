@@ -4,7 +4,7 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
 
 interface IParams {
-    studentId?: string;
+    facultyId?: string;
 }
 
 export async function POST(
@@ -20,38 +20,38 @@ export async function POST(
 
     // check if role of current user is admin
     if (currentUser?.role === "admin") {
-        // Retrieve the studentId passed as parameters
-        const { studentId } = params;
+        // Retrieve the facultyId passed as parameters
+        const { facultyId } = params;
 
-        // If Valid StudentId Provided or not
-        if (!studentId || typeof studentId !== "string") {
+        // If Valid facultyId Provided or not
+        if (!facultyId || typeof facultyId !== "string") {
             throw new Error("Invalid ID");
         }
 
-        // Get the data of student from registeredCard whose studentId is provided
-        const Student = await prisma.studentCard.findFirst({
+        // Get the data of faculty from registeredCard whose facultyId is provided
+        const faculty = await prisma.teacherCard.findFirst({
             where: {
-                id: studentId,
+                id: facultyId,
                 verified: false,
             },
         });
 
-        // If we don't get the Student details from database return null
-        if (!Student) {
+        // If we don't get the faculty details from database return null
+        if (!faculty) {
             return null;
         }
 
-        const verifiedStudent = await prisma.studentCard.update({
+        const verifiedfaculty = await prisma.teacherCard.update({
             data: {
                 verified: true,
             },
             where: {
-                id: Student.id,
+                id: faculty.id,
             },
         });
 
         //And Return the response
-        return NextResponse.json(verifiedStudent);
+        return NextResponse.json(verifiedfaculty);
     }
 }
 
@@ -68,34 +68,34 @@ export async function DELETE(
 
     // check if role of current user is admin
     if (currentUser?.role === "admin") {
-        // Retrieve the studentId passed as parameters
-        const { studentId } = params;
+        // Retrieve the facultyId passed as parameters
+        const { facultyId } = params;
 
-        // If Valid StudentId Provided or not
-        if (!studentId || typeof studentId !== "string") {
+        // If Valid facultyId Provided or not
+        if (!facultyId || typeof facultyId !== "string") {
             throw new Error("Invalid ID");
         }
 
-        // Get the data of student from registeredCard whose studentId is provided
-        const Student = await prisma.studentCard.findFirst({
+        // Get the data of faculty from registeredCard whose facultyId is provided
+        const faculty = await prisma.teacherCard.findFirst({
             where: {
-                id: studentId,
+                id: facultyId,
             },
         });
 
-        // If we don't get the Student details from database return null
-        if (!Student) {
+        // If we don't get the faculty details from database return null
+        if (!faculty) {
             return null;
         }
 
-        const DeleteStudent = await prisma.studentCard.delete({
+        const Deletefaculty = await prisma.teacherCard.delete({
             where: {
-                id: Student.id,
+                id: faculty.id,
             },
         });
 
         //And Return the response
-        return NextResponse.json(DeleteStudent);
+        return NextResponse.json(Deletefaculty);
     }
 }
 
@@ -105,17 +105,17 @@ export async function PATCH(
 ) {
     console.log("here");
     const currentUser = await getCurrentUser();
-    const { studentId } = params;
+    const { facultyId } = params;
     // Check if current user exist or not
     if (!currentUser) {
         return NextResponse.error();
     }
-    // If Valid StudentId Provided or not
-    if (!studentId || typeof studentId !== "string") {
+    // If Valid facultyId Provided or not
+    if (!facultyId || typeof facultyId !== "string") {
         throw new Error("Invalid ID");
     }
     // check if role of current user is admin
-    if (currentUser?.role === "admin" || currentUser?.id === studentId) {
+    if (currentUser?.role === "admin" || currentUser?.id === facultyId) {
 
         // retrieve the
         const body = await request.json();
@@ -123,30 +123,34 @@ export async function PATCH(
             imageSrc,
             Name,
             email,
-            RollNo,
-            RegistrationNo,
             Year,
-            Semester,
-            Stream,
+            Department,
+            Designation,
+            Qualification,
+            Specialization,
+            linkedInurl,
+            resumeurl
         } = body;
 
-        const editStudent = await prisma.studentCard.update({
+        const editfaculty = await prisma.teacherCard.update({
             data: {
                 imageSrc,
                 Name,
                 email,
-                RollNo: String(RollNo),
-                RegistrationNo: String(RegistrationNo),
                 Year: parseInt(Year, 10),
-                Semester,
-                Stream
+                Department,
+                Designation,
+                Qualification,
+                Specialization,
+                linkedInurl,
+                resumeurl
             },
             where: {
-                id: studentId,
+                id: facultyId,
             },
         });
 
         //And Return the response
-        return NextResponse.json(editStudent);
+        return NextResponse.json(editfaculty);
     }
 }

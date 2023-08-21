@@ -3,7 +3,7 @@ import EmptyState from "@/app/components/EmptyState";
 import ClientOnly from "@/app/components/ClientOnly";
 
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import getStudents, { StudentListingParams } from "@/app/actions/getStudents";
+import getNotVerifiedUser, { NotVerifiedListingParams } from "@/app/actions/getNotVerifiedUser";
 
 import VerificationClient from "./VerificationClient";
 
@@ -12,7 +12,7 @@ import VerificationClient from "./VerificationClient";
 
 
 interface VerifyProps {
-  searchParams: StudentListingParams
+  searchParams: NotVerifiedListingParams
 };
 
 const VerifyPage = async ({ searchParams }: VerifyProps) => {
@@ -29,7 +29,7 @@ const VerifyPage = async ({ searchParams }: VerifyProps) => {
     );
   }
 
-  const registration = await getStudents(searchParams);
+  const registration = await getNotVerifiedUser(searchParams);
   if (registration.length === 0) {
     return (
       <ClientOnly>

@@ -138,7 +138,7 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => router.push('/verification')}>
                                         <Settings className="mr-2 h-4 w-4" />
-                                        Verify Students
+                                        Verify User Cards
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => { signOut() }}>
                                         <LogOut className="mr-2 h-4 w-4" />

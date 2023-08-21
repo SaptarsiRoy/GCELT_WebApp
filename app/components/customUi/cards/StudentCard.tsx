@@ -41,8 +41,8 @@ import { ConfirmationModal } from "@/app/components/modals/ConfirmationModal";
 
 interface StudentCardProps {
     data: SafeListing;
-    onAction?: (id: string) => void;
-    onDeletion?: (id: string) => void;
+    onAction?: (id: string, path:string) => void;
+    onDeletion?: (id: string, path:string) => void;
     disabled?: boolean;
     actionLabel?: string;
     actionId?: string;
@@ -71,7 +71,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
             if (disabled) {
                 return;
             }
-            onAction?.(actionId)
+            onAction?.(actionId,'student')
         }, [disabled, onAction, actionId]);
 
 
@@ -83,7 +83,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
             if (disabled) {
                 return;
             }
-            onDeletion?.(actionId)
+            onDeletion?.(actionId,'student')
         }, [disabled, onDeletion, actionId]);
 
 
@@ -126,7 +126,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
                                     variant="secondary"
                                     size="xs"
                                     disabled={disabled}
-                                    onClick={() => router.push(`/profile/${data.id}`)}
+                                    onClick={() => router.push(`/student/${data.id}`)}
                                 >Edit</Button>
                             </div>
                         }

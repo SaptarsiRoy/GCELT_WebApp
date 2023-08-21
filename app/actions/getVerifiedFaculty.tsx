@@ -70,7 +70,7 @@ export default async function getStudents(
 
 
         const facultylist = await prisma.teacherCard.findMany({
-            where: { AND: [query, { verified: false }] },
+            where: { AND: [query, { verified: true }] },
             orderBy: {
                 createdAt: 'desc'
             }

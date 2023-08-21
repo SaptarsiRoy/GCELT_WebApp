@@ -48,6 +48,7 @@ model Account {
 
 model StudentCard {
   id              String @id @map("_id") @db.ObjectId
+  role            String @default("student")
   Name            String
   email           String
   RollNo          String
@@ -66,6 +67,7 @@ model StudentCard {
 
 model TeacherCard {
   id             String @id  @map("_id") @db.ObjectId
+  role            String  @default("faculty")
   Name            String
   email           String
   imageSrc        String

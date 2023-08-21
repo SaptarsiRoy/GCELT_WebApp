@@ -41,8 +41,8 @@ import { ConfirmationModal } from "@/app/components/modals/ConfirmationModal";
 
 interface FacultyCardProps {
     data: SafeFacultyListing;
-    onAction?: (id: string) => void;
-    onDeletion?: (id: string) => void;
+    onAction?: (id: string, path:string) => void;
+    onDeletion?: (id: string, path:string) => void;
     disabled?: boolean;
     actionLabel?: string;
     actionId?: string;
@@ -68,7 +68,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
             if (disabled) {
                 return;
             }
-            onAction?.(actionId)
+            onAction?.(actionId,'teacher')
         }, [disabled, onAction, actionId]);
 
 
@@ -80,7 +80,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                 if (disabled) {
                     return;
                 }    
-                onDeletion?.(actionId)
+                onDeletion?.(actionId,'teacher')
             }, [disabled, onDeletion, actionId]);
 
 
@@ -123,7 +123,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                                     variant="secondary"
                                     size="xs"
                                     disabled={disabled}
-                                    onClick={() => router.push(`/faculty/profile/${data.id}`)}
+                                    onClick={() => router.push(`/faculty/${data.id}`)}
                                 >Edit</Button>
                             </div>
                         }

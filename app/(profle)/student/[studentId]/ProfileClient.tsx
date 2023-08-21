@@ -3,9 +3,11 @@
 //icons
 import { MdAlternateEmail, MdOutlineCalendarMonth, MdKeyboardBackspace } from "react-icons/md"
 import { HiOutlineUser, HiOutlineDocumentSearch, HiOutlineClock } from "react-icons/hi"
-import { BsLinkedin, BsFillStarFill, BsBook } from "react-icons/bs";
+import { Tb123 } from "react-icons/tb"
+import { BsLinkedin, BsGithub, BsMedium } from "react-icons/bs";
 import { FiPhoneCall } from "react-icons/fi";
-import { PiGraduationCapDuotone, PiWarningOctagonBold, PiIdentificationBadge } from "react-icons/pi";
+import { SiLeetcode } from "react-icons/si";
+import { PiGraduationCapDuotone, PiWarningOctagonBold } from "react-icons/pi";
 import { VscVerifiedFilled } from "react-icons/vsc";
 
 // Global import 
@@ -23,7 +25,7 @@ import {
 } from 'react-hook-form';
 
 // types safety
-import { SafeFacultyListing, SafeUser } from "@/app/types";
+import { SafeListing, SafeUser } from "@/app/types";
 
 //components
 import Container from "@/app/components/Container";
@@ -37,6 +39,13 @@ import {
     FormLabel,
     FormMessage,
 } from '@/app/components/ui/form';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/app/components/ui/select"
 import Heading from "@/app/components/ui/Heading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 
@@ -45,24 +54,22 @@ const editProfileSchema = z.object({
     imageSrc: z.string().url().optional(),
     Name: z.string().min(3), //.optional().transform(e => e === "" ? undefined : e) , // atleast 3 character is required to properly name our store
     email: z.string().email(),
+    RollNo: z.coerce.number().min(11),
+    RegistrationNo: z.coerce.number().min(16),
     Year: z.coerce.number().min(4),
-    Department: z.string().min(5),
-    Designation: z.string().min(5),
-    Qualification: z.string().min(2),
-    Specialization: z.string({
+    Semester: z.string().min(1),
+    Stream: z.string({
         required_error: "Please select Stream You are Enrolled in.",
-    }).min(10),
-    linkedInurl: z.string().url().optional(),
-    resumeurl: z.string().url().optional()
+    }),
 });
 
 interface ProfileClientProps {
-    FacultyList: SafeFacultyListing;
+    Studentlist: SafeListing;
     currentUser?: SafeUser | null;
 }
 
 const ProfileClient: React.FC<ProfileClientProps> = ({
-    FacultyList,
+    Studentlist,
     currentUser
 }) => {
     const router = useRouter();
@@ -72,18 +79,17 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
     const form = useForm<z.infer<typeof editProfileSchema>>({
         resolver: zodResolver(editProfileSchema),
         defaultValues: {
-            imageSrc: FacultyList.imageSrc,
-            Name: FacultyList.Name,
-            email: FacultyList.email,
-            Year: FacultyList.Year,
-            Department: FacultyList.Department,
-            Designation: FacultyList.Designation,
-            Qualification: FacultyList.Qualification,
-            Specialization: FacultyList.Specialization,
-            linkedInurl: FacultyList.linkedInurl,
-            resumeurl: FacultyList.resumeurl,
+            imageSrc: Studentlist.imageSrc,
+            Name: Studentlist.Name,
+            email: Studentlist.email,
+            RollNo: Number(Studentlist.RollNo),
+            RegistrationNo: Number(Studentlist.RegistrationNo),
+            Year: Number(Studentlist.Year),
+            Semester: Studentlist.Semester,
+            Stream: Studentlist.Stream,
         },
     })
+    const Stream = form.watch('Stream');
     const imageSrc = form.watch('imageSrc');
 
     // const setCustomValue = (id: string, value: any) => {
@@ -93,11 +99,11 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
     //         shouldValidate: true
     //     })
     // }
-    const id: String = FacultyList.id;
+    const id:String = Studentlist.id;
 
     const onSubmit = async (data: z.infer<typeof editProfileSchema>) => {
         setIsLoading(true);
-        await axios.post(`/api/listings/student/edit/${FacultyList?.id}`, data)
+        await axios.patch(`/api/listings/student/${Studentlist?.id}`, data)
             .then(() => {
                 toast.success('Updated Successful!');
                 router.refresh();
@@ -146,7 +152,7 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                                 Update
                                             </Button>
                                         </span>
-                                        {FacultyList.verified ? (
+                                        {Studentlist.verified ? (
                                             <div className="rounded-md text-green-500 dark:text-green-600 flex gap-2 text-lg items-center">
                                                 <VscVerifiedFilled size={28} /> Verified Student
                                             </div>
@@ -163,34 +169,6 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                 <Heading
                                     heading1="Your Social Handles"
                                     subtitle="Make Changes to Update Your Profile's Social Handles"
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="linkedInurl"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="flex gap-2 items-center"><BsLinkedin size={18} />LinekedIn Account</FormLabel>
-                                            <FormControl>
-                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                <Input placeholder="https://www.linkedin.com/in" {...field} disabled={isLoading} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="resumeurl"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="flex gap-2 items-center"><HiOutlineDocumentSearch size={22} />Your Resume / CV</FormLabel>
-                                            <FormControl>
-                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                <Input placeholder="Paste Your Resume / CV link" {...field} disabled={isLoading} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
                                 />
 
 
@@ -214,7 +192,7 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                                 <FormLabel className="flex gap-3 items-center"><HiOutlineUser size={16} />Name</FormLabel>
                                                 <FormControl>
                                                     {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input placeholder="Name" {...field} disabled={isLoading} />
+                                                    <Input placeholder="Name" {...field} disabled={isLoading}/>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -229,7 +207,7 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                                 <FormLabel className="flex gap-3 items-center"><MdAlternateEmail size={16} />Email</FormLabel>
                                                 <FormControl>
                                                     {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input type="email" placeholder="johndoe@email.com" {...field} disabled={isLoading} />
+                                                    <Input type="email" placeholder="johndoe@email.com" {...field} disabled={isLoading}/>
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -238,13 +216,13 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                     <div className="flex flex-row gap-4">
                                         <FormField
                                             control={form.control}
-                                            name="Department"
+                                            name="RollNo"
                                             render={({ field, formState }) => (
                                                 <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><BsBook size={18} />Department</FormLabel>
+                                                    <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Roll Number</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required placeholder="Alloted Department" {...field} disabled={isLoading} />
+                                                        <Input required type="number" {...field} disabled={isLoading}/>
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -252,13 +230,43 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="Designation"
+                                            name="RegistrationNo"
                                             render={({ field }) => (
                                                 <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><PiIdentificationBadge size={20} />Designation</FormLabel>
+                                                    <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Registration Number</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input placeholder="Designation" {...field} disabled={isLoading} />
+                                                        <Input type="number" {...field} disabled={isLoading}/>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="flex flex-row gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="Year"
+                                            render={({ field, formState }) => (
+                                                <FormItem className="w-1/2">
+                                                    <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining</FormLabel>
+                                                    <FormControl>
+                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                        <Input required type="number" {...field} disabled={isLoading}/>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Semester"
+                                            render={({ field }) => (
+                                                <FormItem className="w-1/2">
+                                                    <FormLabel className="flex gap-2 items-center"><HiOutlineClock size={18} />Semester</FormLabel>
+                                                    <FormControl>
+                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                        <Input placeholder="Name" {...field} disabled={isLoading}/>
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -267,35 +275,29 @@ const ProfileClient: React.FC<ProfileClientProps> = ({
                                     </div>
                                     <FormField
                                         control={form.control}
-                                        name="Qualification"
+                                        name="Stream"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="flex gap-2 items-center"><PiGraduationCapDuotone size={22} />Qualification</FormLabel>
-                                                <FormControl>
-                                                    {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input placeholder="Qualification" {...field} disabled={isLoading} />
-                                                </FormControl>
+                                                <FormLabel className="flex gap-2 items-center"><PiGraduationCapDuotone size={18} />Stream</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a verified email to display" {...field} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="Computer Science Engineering">Computer Science and Engineering</SelectItem>
+                                                        <SelectItem value="Information Technology">Information Technology</SelectItem>
+                                                        <SelectItem value="Leather Technology">Leather Technology</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="Specialization"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex gap-2 items-center"><BsFillStarFill className="text-amber-500" />Specialization</FormLabel>
-                                                <FormControl>
-                                                    {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input placeholder="Specialization" {...field} disabled={isLoading} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-
                                 </div>
                             </div>
+
                             {/*  End of Profile Section */}
                         </div>
                     </div>
