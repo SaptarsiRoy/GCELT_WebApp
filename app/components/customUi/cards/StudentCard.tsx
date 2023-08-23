@@ -20,7 +20,7 @@ import {
     SafeListing,
     SafeUser
 } from "@/app/types";
-import getYear from "@/app/actions/getYear";
+import getYear from "@/lib/getYear";
 
 //Components
 import {

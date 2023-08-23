@@ -14,6 +14,7 @@ import Heading from "../components/ui/Heading";
 import { Button } from "@/app/components/ui/button";
 import { SafeUser } from "@/app/types";
 import { Card, CardContent } from "@/app/components/ui/card";
+import { useGenerate } from "@/hooks/useGenerate";
 
 
 interface roleClientProps {
@@ -23,6 +24,7 @@ interface roleClientProps {
 const MarkRoleClient: React.FC<roleClientProps> = ({
   user,
 }) => {
+  const accessCodeModal = useGenerate();
   const [assignRoleId, setAssignRoleId] = useState("");
   const router = useRouter();
 
@@ -55,7 +57,7 @@ const MarkRoleClient: React.FC<roleClientProps> = ({
               className={`${user?.role === 'teacher' ? "bg-violet-700 dark:text-white" : "bg-transparent"}
                 rounded-r-full hover:bg-violet-700 hover:border-violet-700`}
               size="sm"
-              onClick={() => onAssign(user?.id, 'teacher')}
+              onClick={() => accessCodeModal.onOpen(user?.role)}
             >Teacher</Button>
           </div>
         </div>

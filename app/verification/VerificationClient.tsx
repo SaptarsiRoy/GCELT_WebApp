@@ -13,6 +13,7 @@ import Container from "@/app/components/Container";
 import StudentCard from "@/app/components/customUi/cards/StudentCard";
 import FacultyCard from "@/app/components/customUi/cards/FacultyCard";
 import { Trash2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 
 
 
@@ -31,7 +32,7 @@ const VerificationClient: React.FC<TripsClientProps> = ({
     const [VerifyId, setVerifyId] = useState("");
 
     const onVerify = useCallback(
-        (id: string , path:string) => {
+        (id: string, path: string) => {
             setVerifyId(id);
             // Request
             axios
@@ -53,7 +54,7 @@ const VerificationClient: React.FC<TripsClientProps> = ({
 
 
     const onDelete = useCallback(
-        (id: string, path:string) => {
+        (id: string, path: string) => {
             setVerifyId(id);
             // Request
             axios
@@ -82,50 +83,77 @@ const VerificationClient: React.FC<TripsClientProps> = ({
 
     return (
         <Container>
-            <Heading
+            
+            <Tabs defaultValue="student">
+                <div className="flex flex-row justify-between">
+                <Heading
                 title="Waiting for Verification"
                 subtitle="Where you've been and where you're going"
-            />
-            <div
-                className="
-          mt-10
-          grid 
-          grid-cols-1 
-          sm:grid-cols-2 
-          md:grid-cols-2 
-          lg:grid-cols-3
-          xl:grid-cols-4
-          2xl:grid-cols-5
-          gap-8
-        "
-            >
-                {verification.map((user: any) => (
-                    user.role === 'student' ? (
-                        <StudentCard
-                            key={user.id}
-                            data={user}
-                            // user={user}
-                            actionId={user.id}
-                            onAction={onVerify}
-                            onDeletion={onDelete}
-                            disabled={VerifyId === user.id}
-                            actionLabel="Verify"
-                            currentUser={currentUser}
-                        />) : (
-                        <FacultyCard
-                            key={user.id}
-                            data={user}
-                            // user={user}
-                            actionId={user.id}
-                            onAction={onVerify}
-                            onDeletion={onDelete}
-                            disabled={VerifyId === user.id}
-                            actionLabel="Verify"
-                            currentUser={currentUser}
-                        />
-                    )
-                ))}
-            </div>
+                />
+                <TabsList>
+                    <TabsTrigger value="student">Student</TabsTrigger>
+                    <TabsTrigger value="faculty">Faculty</TabsTrigger>
+                </TabsList>
+                </div>
+                <TabsContent value="student">
+                    <div
+                        className="mt-10
+                            grid grid-cols-1 
+                            sm:grid-cols-2 
+                            md:grid-cols-2 
+                            lg:grid-cols-3
+                            xl:grid-cols-4
+                            2xl:grid-cols-5
+                            gap-8
+                        "
+                    >
+                        {verification.map((user: any) => (
+                            user.role === 'student' && (
+                                <StudentCard
+                                    key={user.id}
+                                    data={user}
+                                    // user={user}
+                                    actionId={user.id}
+                                    onAction={onVerify}
+                                    onDeletion={onDelete}
+                                    disabled={VerifyId === user.id}
+                                    actionLabel="Verify"
+                                    currentUser={currentUser}
+                                />
+                            )
+                            
+                        ))}
+                    </div>
+                </TabsContent>
+                <TabsContent value="faculty">
+                    <div
+                        className="mt-10
+                            grid grid-cols-1 
+                            sm:grid-cols-2 
+                            md:grid-cols-3 
+                            lg:grid-cols-3
+                            2xl:grid-cols-4
+                            gap-6
+                            "
+                        >
+                        {verification.map((user: any) => (
+                            user.role === 'faculty' && (
+                                <FacultyCard
+                                    key={user.id}
+                                    data={user}
+                                    // user={user}
+                                    actionId={user.id}
+                                    onAction={onVerify}
+                                    onDeletion={onDelete}
+                                    disabled={VerifyId === user.id}
+                                    actionLabel="Verify"
+                                    currentUser={currentUser}
+                                />
+                            )
+                        ))}
+                    </div>
+                </TabsContent>
+            </Tabs>
         </Container>
     );
 };

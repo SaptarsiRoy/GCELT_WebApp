@@ -11,7 +11,7 @@ import AuthContextProvider from '@/providers/AuthContextProvider'
 
 // services
 import getCurrentUser from "@/app/actions/getCurrentUser"
-import LogInModal from "./components/modals/logInModal";
+import LogInModal from "./components/modals/LoginModal";
 
 
 
