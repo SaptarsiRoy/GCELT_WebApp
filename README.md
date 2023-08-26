@@ -5,7 +5,7 @@ This is a repository for a Full Stack Website for GCELT
 - [x] View Mode and User Mode Security Access
 - [x] Implemented Theme Toggling Facility 
 - [x] Showcasing All Students using card design 
-- [ ] TODO :  Implement Filtering and Searching Functionality
+- [x] TODO :  Implement Filtering and Searching Functionality
 - [x] Showcasing All Faculty Members using card design
 - [ ] TODO :  Implement Filtering and Searching Functionality here as well
 - [x] Role Based Access : Three Roles - Students , Teachers , Admin

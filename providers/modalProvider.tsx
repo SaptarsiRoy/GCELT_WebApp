@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 
 
 //Local imports
-import LogInModal from '@/app/components/modals/logInModal';
+import LogInModal from '@/app/components/modals/LoginModal';
+import GenerateAccessModal from '@/app/components/modals/GenerateAccessModal';
 
 export const ModalProvider = () => {
     // To ensure there will not be any Hydration errors with client components like Modals
@@ -24,6 +25,7 @@ export const ModalProvider = () => {
     return (
         <>
             <LogInModal />
+            <GenerateAccessModal />
         </>
     );
 }

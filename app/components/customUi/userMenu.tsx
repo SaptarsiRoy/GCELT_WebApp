@@ -29,7 +29,7 @@ import { ThemeModeToggle } from "@/app/components/customUi/themeToggler";
 
 import { SafeUser } from "@/app/types";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
-
+import { useGenerate } from "@/hooks/useGenerate";
 
 
 interface UserMenuProps {
@@ -39,6 +39,7 @@ interface UserMenuProps {
 export default function UserMenu({ currentUser }: UserMenuProps) {
 
     const registerModal = useRegisterModal();
+    const accessCodeModal = useGenerate();
     const router = useRouter();
 
     return (
@@ -139,6 +140,10 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                                     <DropdownMenuItem onClick={() => router.push('/verification')}>
                                         <Settings className="mr-2 h-4 w-4" />
                                         Verify User Cards
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => accessCodeModal.onOpen(currentUser.role)}>
+                                        <LogIn className="mr-2 h-4 w-4" />
+                                        Generate Access Code
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => { signOut() }}>
                                         <LogOut className="mr-2 h-4 w-4" />

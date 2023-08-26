@@ -37,7 +37,7 @@ export default async function getVerifiedStudents(
       query.Name = {contains: Name, mode: 'insensitive'};
     }
     if (email) {
-      query.email = email;
+      query.email = {contains: email, mode: 'insensitive'};;
     }
     if (RollNo) {
       query.RollNo = {contains: RollNo, mode: 'insensitive'};
