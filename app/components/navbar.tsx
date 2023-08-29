@@ -36,8 +36,7 @@ const Navbar: React.FC<NavbarProps> = async ({
                     </div>
                 </Container>                
             </div>
-             {/* <Categories /> */}
-            <Filter/>           
+            {/* <Filter/>            */}
         </div>
     )
 }

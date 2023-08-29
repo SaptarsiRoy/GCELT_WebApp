@@ -8,5 +8,5 @@ export function generateAccessCode() {
       randomChars += chars.charAt(randomIndex);
     }
   
-    return `${prefix}${randomChars}`;
+    return `${prefix}-${randomChars}`;
   }

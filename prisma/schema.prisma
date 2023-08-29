@@ -52,19 +52,39 @@ model StudentCard {
   role            String @default("student")
   Name            String
   email           String
-  RollNo          String
   imageSrc        String
+  Year            Int
   createdAt       DateTime @default(now())
   verified        Boolean  @default(false)
-  RegistrationNo  String
-  Year            Int
-  Semester        String
+  RollNo          String?
+  RegistrationNo  String?  
+  Program         String
   Stream          String
+  About           String?
+  socialLinks     SocialLinks?
+  employment_status  String?
+  higher_study_degree String?
+  university     String?
+  job_title      String?
+  company        String?
+  industry       String?
 
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
-// model 
+model SocialLinks {
+  id              String @id  @default(auto()) @map("_id") @db.ObjectId
+  studentId       String @db.ObjectId @unique
+  linkedInLink    String?
+  githubLink      String?
+  leetCodeLink    String?
+  mediumLink      String?
+  phoneNum        String?
+  twitterLink     String?
+  resume          String?
+
+  student StudentCard @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
 
 model TeacherCard {
   id             String @id  @map("_id") @db.ObjectId
@@ -87,9 +107,9 @@ model TeacherCard {
 
 model ReferralCode {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  accessCode      String
+  accessCode      String    @unique
   createdBy       String    @db.ObjectId
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime  @updatedAt
   codeExpiration  DateTime
   users           String[]  @db.ObjectId
   user User @relation(fields: [createdBy], references: [id], onDelete: Cascade)

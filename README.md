@@ -5,21 +5,24 @@ This is a repository for a Full Stack Website for GCELT
 - [x] View Mode and User Mode Security Access
 - [x] Implemented Theme Toggling Facility 
 - [x] Showcasing All Students using card design 
-- [x] TODO :  Implement Filtering and Searching Functionality
+- [x] Implement Filtering and Searching Functionality
 - [x] Showcasing All Faculty Members using card design
-- [ ] TODO :  Implement Filtering and Searching Functionality here as well
+- [x] Implement Filtering and Searching Functionality here as well
 - [x] Role Based Access : Three Roles - Students , Teachers , Admin
 - [x] Assign Roles to Existing users by admin
 - [x] Have Verification of Registered User Information Facility
 - [x] New User SignUp , Redirect to Registration Form with Necessary Details 
 - [x] Editing and updation Facility for Users who owned the Card as well as for Admins
-- [ ] TODO: Referral Program implementation to request for Role update for users during registration
+- [x] Referral Program implementation to request for Role update for users during registration
 - [x] SignUp / SignIn and Logout Facility using NextAuth , NextSessions and Mongodb
 - [ ] TODO : Launching New Role : CR and Assigning some special facility that students don't have
 - [ ] TODO : Launch new updates with Routine navigation
-- [ ] TODO :  Launch new updates with Exam navigation
+- [ ] TODO : Launch new updates with Exam navigation
 - [ ] TODO : Teacher , CR and admin can Create Routine or update Routine
 - [ ] TODO : More Future Updates
+- [ ] TODO : Cooldown Time for Updating Information only for Students 
+- [ ] TODO : Feedback form for Testing Phase
+- [ ] TODO :  
 
 
 ## Constraints to Our Project

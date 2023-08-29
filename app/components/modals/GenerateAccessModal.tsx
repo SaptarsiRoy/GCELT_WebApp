@@ -1,4 +1,3 @@
-'use client'
 // icons
 import { HiOutlineTicket } from "react-icons/hi";
 import { Copy, CopyCheck } from "lucide-react"
@@ -26,7 +25,7 @@ import {
 import { Input } from '@/app/components/ui/input';
 import { useGenerate } from "@/hooks/useGenerate";
 import { Modal } from "@/app/components/customUi/modal";
-import prismadb from "@/lib/prismadb";
+
 // Validation with zod for registerschema , only works with signup schema
 const accessCodeSchema = z.object({
     code: z.string().min(10), //.optional().transform(e => e === "" ? undefined : e) , // atleast 3 character is required to properly name our store
@@ -35,45 +34,27 @@ const accessCodeSchema = z.object({
 
 // The main Component
 const GenerateAccessModal = () => {
-    const [data, setData] = useState<any>([]);   
-    const [isLoading, setIsLoading] = useState<any>(false);
-
-    // const fetchData = async () => {
-    //     const result = await prismadb.studentCard.findMany();
-    //     return result;
-    // }  
-
-    // useEffect(() => {
-    //     fetchData()
-    //     .then((result) => {
-    //         setData(result);
-    //     })
-    // },[])
-
-    // useEffect(() => {
-    //     data ? console.log(data) : null;       
-    //     setIsLoading(false);
-    // },[data])
-
     const accessModal = useGenerate();
-    // To maintain session as need to redirect when singin process is done 
     const router = useRouter();
-    // state to control Loading condition  , disable trigger when so submission take place
 
+    //All States Controller
+    const [data, setData] = useState<any>([]);   
+    // state to control Loading condition  , disable trigger when so submission take place
+    const [isLoading, setIsLoading] = useState<Boolean>(false);
+    // state to control is copied icon visibility   
     const [copied, setCopied] = useState(false);
-    const [children, setInputValue] = useState('');
+    //state to control children/ text to be 
+    const [children, _] = useState<any>(accessModal.accessCode);
+    
+
     const handleCopyToClipboard = () => {
+        console.log("children:",children);
+        
         navigator.clipboard.writeText(children);
         setCopied(true);
     };
 
-    // if we authenticated to our session then show main page or stay in current page of login
-    // useEffect(() => {
-    //     if (session?.status === 'authenticated') {
-    //         router.push('/')
-    //     }
-    // }, [session?.status, router]);
-
+    
     // useform function provided by react-hook-form
     const form = useForm<z.infer<typeof accessCodeSchema>>({
         resolver: zodResolver(accessCodeSchema),
@@ -86,28 +67,18 @@ const GenerateAccessModal = () => {
     const onSubmit = async (data: z.infer<typeof accessCodeSchema>) => {
         setIsLoading(true);
 
-
-        // //NextAuth SignIN
-        // console.log('Inside Login')
-        // signIn('credentials', {
-        //     ...data,
-        //     redirect: false,
-        // })
-        //     .then((callback) => {
-        //         if (callback?.ok) {
-        //             toast.success('Logged in');
-        //             //To check the url's storeid if present inside datanase and if present then fetch it
-        //             accessModal.onClose();
-        //             router.refresh()
-        //         }
-
-        //         if (callback?.error) {
-        //             toast.error(callback.error);
-        //         }
-        //     })
-        //     .finally(() =>
-        //         setIsLoading(false)
-        //     )
+        const result = await axios.patch('/api/refferalcode', data)
+        .then(() => {
+            toast.success('Role Upgraded to Teacher!');
+            router.refresh();
+            form.reset();
+        })
+        .catch(() => {
+            toast.error('Something went wrong.');
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
 
 
     }
@@ -125,7 +96,7 @@ const GenerateAccessModal = () => {
                 {accessModal.role === 'admin' ? (
                     <>
                         <div className="flex space-x-2 items-center">
-                            <Input value={children} readOnly className="w-full relative outline-none focus:outline-transparent" />
+                            <Input value={accessModal.accessCode} readOnly className="w-full relative outline-none focus:outline-transparent" />
                             <Button onClick={handleCopyToClipboard} variant="secondary"
                                 size="sm" className="shrink-0 absolute right-6 ">
                                 Copy {copied ? <CopyCheck className="ml-2 text-green-500" /> : <Copy className="ml-2" />}
@@ -145,7 +116,7 @@ const GenerateAccessModal = () => {
                                             <FormLabel>Access Code</FormLabel>
                                             <FormControl>
                                                 {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                <Input type="email" placeholder="Enter Your Access Code Here" {...field} />
+                                                <Input type="text" placeholder="Enter Your Access Code Here" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

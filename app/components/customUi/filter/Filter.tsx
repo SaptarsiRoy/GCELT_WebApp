@@ -29,12 +29,13 @@ const Filter = () => {
     // Holds the default path name
     const params = useSearchParams();
     const pathname = usePathname();
-    const isMainPage = pathname === "/";
+    // const isMainPage = pathname === "/";
+    // const isFacultyPage = pathname === "/faculty";
     
-    //restriting to first page only . This can create too many hooks rendering issue
-    if (!isMainPage) {
-        return null;
-    }
+    // //restriting to first page only . This can create too many hooks rendering issue
+    // if (!isMainPage && !isFacultyPage) {
+    //     return null;
+    // }
 
 
     // Category Search 
