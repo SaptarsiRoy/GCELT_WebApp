@@ -1,13 +1,12 @@
 'use client';
 
 //icons
-import { BsLinkedin, BsGithub, BsMedium } from "react-icons/bs";
-import { FiPhoneCall, FiAtSign } from "react-icons/fi";
-import { SiLeetcode } from "react-icons/si";
+import { BsLinkedin, BsSend } from "react-icons/bs";
+import { FiAtSign } from "react-icons/fi";
 import { PiGraduationCapDuotone } from "react-icons/pi";
 import { HiOutlineDocumentSearch, HiBadgeCheck, HiOutlineClock } from "react-icons/hi";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import {Trash2} from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 
 // Global imports
@@ -20,7 +19,7 @@ import {
     SafeFacultyListing,
     SafeUser
 } from "@/app/types";
-import getYear from "@/app/actions/getYear";
+import getYear from "@/lib/getYear";
 
 //Components
 import {
@@ -41,8 +40,8 @@ import { ConfirmationModal } from "@/app/components/modals/ConfirmationModal";
 
 interface FacultyCardProps {
     data: SafeFacultyListing;
-    onAction?: (id: string, path:string) => void;
-    onDeletion?: (id: string, path:string) => void;
+    onAction?: (id: string, path: string) => void;
+    onDeletion?: (id: string, path: string) => void;
     disabled?: boolean;
     actionLabel?: string;
     actionId?: string;
@@ -68,24 +67,24 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
             if (disabled) {
                 return;
             }
-            onAction?.(actionId,'teacher')
+            onAction?.(actionId, 'teacher')
         }, [disabled, onAction, actionId]);
 
 
 
-        const handleDelete = useCallback(
-            (e: React.MouseEvent<HTMLButtonElement>) => {
-                e.stopPropagation();
-    
-                if (disabled) {
-                    return;
-                }    
-                onDeletion?.(actionId,'teacher')
-            }, [disabled, onDeletion, actionId]);
+    const handleDelete = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>) => {
+            e.stopPropagation();
+
+            if (disabled) {
+                return;
+            }
+            onDeletion?.(actionId, 'teacher')
+        }, [disabled, onDeletion, actionId]);
 
 
-        //acronym of Name
-        let acronym = data?.Name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'');
+    //acronym of Name
+    let acronym = data?.Name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '');
 
     return (
         <Card className="select-none w-full bg-neutral-100 dark:bg-slate-900 shadow-lg hover:-translate-y-4 transition">
@@ -97,37 +96,43 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                     </Avatar>
                     <div className="flex flex-col 
                         w-full overflow-hidden ">
-
-                        {(currentUser?.role === 'admin' || currentUser?.id === data.id) &&
-                            <div className="mb-3 w-full rounded-md justify-end items-center flex flex-row gap-2">                                
-                                {onAction && actionLabel && (                 
+                        <div className="mb-3 w-full rounded-md justify-end items-center flex flex-row gap-2">
+                            {(currentUser?.role === 'admin' || currentUser?.id === data.id) &&
+                                <>
+                                    {onAction && actionLabel && (
+                                        <Button
+                                            size="xs"
+                                            disabled={disabled}
+                                            onClick={handleVerify}
+                                        >{actionLabel}</Button>
+                                    )}
+                                    <ConfirmationModal
+                                        isOpen={open}
+                                        onClose={() => setOpen(false)}
+                                        onConfirm={() => { handleDelete }}
+                                        loading={disabled}
+                                    />
+                                    <Button variant="ghost" size="sm"
+                                        className="text-red-600 p-0"
+                                        onClick={() => setOpen(true)}
+                                    >
+                                        <Trash2 size={20} />
+                                    </Button>
                                     <Button
+                                        variant="secondary"
                                         size="xs"
                                         disabled={disabled}
-                                        onClick={handleVerify}
-                                    >{actionLabel}</Button>
-                                )}
-                                <ConfirmationModal
-                                    isOpen={open}
-                                    onClose={() => setOpen(false)}
-                                    onConfirm={()=>{handleDelete}}
-                                    loading={disabled}
-                                />
-                                <Button variant="ghost" size="sm"
-                                    className="text-red-600 p-0"
-                                    onClick={() => setOpen(true)}
-                                >
-                                    <Trash2 size={20} />
-                                </Button>
-                                <Button
-                                    variant="secondary"
-                                    size="xs"
-                                    disabled={disabled}
-                                    onClick={() => router.push(`/faculty/${data.id}`)}
-                                >Edit</Button>
-                            </div>
-                        }
-
+                                        onClick={() => router.push(`/faculty/${data.id}`)}
+                                    >Edit</Button>
+                                </>
+                            }
+                            {!onAction && <Button variant="ghost" size="sm"
+                                className="text-white font-bold p-0"
+                                onClick={() => {}}
+                            >
+                                <BsSend size={16} />
+                            </Button>}
+                        </div>
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-row items-center gap-1">
                                 <span className="bg-purple-200  dark:bg-slate-800 p-1  
@@ -135,7 +140,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                                     <HiOutlineClock size={18} />
                                 </span>
                                 <div className="font-light text-base">
-                                    Joined : {data?.Year} 
+                                    Joined : {data?.Year}
                                 </div>
                             </div>
                             <div className="flex flex-row items-center gap-1">
@@ -144,7 +149,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                                     <PiGraduationCapDuotone size={18} />
                                 </span>
                                 <div className="font-light text-base">
-                                    {data.Designation} 
+                                    {data.Designation}
                                 </div>
                             </div>
                         </div>
@@ -181,7 +186,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                     </div>
                 </div>
                 <span className="pt-5 flex flex-col absolute gap-2 right-3 ">
-                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16}/>}>{data.linkedInurl}</LinkDialog>
+                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16} />}>{data.linkedInurl}</LinkDialog>
                     <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />}>{data.resumeurl}</LinkDialog>
 
                 </span>

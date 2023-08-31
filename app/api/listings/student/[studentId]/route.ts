@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/lib/prismadb";
+import getYear from "@/lib/getYear";
 
 interface IParams {
     studentId?: string;
@@ -126,20 +127,59 @@ export async function PATCH(
             RollNo,
             RegistrationNo,
             Year,
-            Semester,
+            Program,
             Stream,
+            SocialLinks,
+            About,
+            carrer_status,
+            higher_study_degree,
+            university,
+            job_title,
+            company,
+            industry,
         } = body;
+
+        var role;
+        if (getYear(Year)[0] === 'Alumni') {
+            role = 'alumni'
+        }
+        else {
+            role = 'student'
+        }
+
+        await prisma.socialLinks.update({
+            data: {
+                linkedInLink: SocialLinks.LinkedInLink,
+                githubLink: SocialLinks.GitHubLink,
+                leetCodeLink: SocialLinks.LeetCodeLink,
+                mediumLink: SocialLinks.MediumLink,
+                phoneNum: SocialLinks.PhoneNum,
+                twitterLink: SocialLinks.TwitterLink,
+                resume: SocialLinks.Resume,
+            },
+            where: {
+                studentId: studentId,
+            }
+        })
 
         const editStudent = await prisma.studentCard.update({
             data: {
                 imageSrc,
+                role,
                 Name,
                 email,
                 RollNo: String(RollNo),
                 RegistrationNo: String(RegistrationNo),
                 Year: parseInt(Year, 10),
-                Semester,
-                Stream
+                Stream,
+                Program,
+                About,
+                carrer_status,
+                higher_study_degree,
+                university,
+                job_title,
+                company,
+                industry,
             },
             where: {
                 id: studentId,

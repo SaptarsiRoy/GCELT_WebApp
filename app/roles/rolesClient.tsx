@@ -22,30 +22,7 @@ const RolesClient: React.FC<RolesClientProps> = ({
   currentUser,
 }) => {
   const router = useRouter();
-  const [deletingId, setDeletingId] = useState("");
-
-  const onCancel = useCallback(
-    (id: string) => {
-      setDeletingId(id);
-      // Request
-      axios
-        .post(`/api/listings/${id}`)
-        .then(() => {
-          toast.success("Student Verfied Successfully");
-          router.refresh();
-        })
-        .catch((error) => {
-          toast.error(error?.response?.statusText);
-          console.error(error);
-        })
-        .finally(() => {
-          setDeletingId("");
-        });
-    },
-    [router]
-  );
-  console.log(allUsers);
-  return (
+    return (
     <Container>
       <Heading
         title="Waiting for Verification"
@@ -59,18 +36,6 @@ const RolesClient: React.FC<RolesClientProps> = ({
           gap-3
         "
       >
-        {/* {allUsers.map((user: any) => (
-          <UserList
-            key={user.id}
-            data={user}
-            // user={user}
-            actionId={user.id}
-            onAction={onCancel}
-            disabled={deletingId === user.id}
-            actionLabel="Verify"
-            currentUser={currentUser}
-          />
-        ))} */}
         <UserList data={allUsers} columns={columns}/>
       </div>
     </Container>

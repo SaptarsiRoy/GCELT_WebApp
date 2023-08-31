@@ -13,6 +13,7 @@ import FacultyCard from "@/app/components/customUi/cards/FacultyCard";
 // actions
 import getVerifiedFaculty, { VerifiedFacultyListingParam } from "@/app/actions/getVerifiedFaculty";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import Filter from "@/app/components/customUi/filter/Filter";
 // import getStudentById from "./actions/getStudentById";
 
 
@@ -38,15 +39,15 @@ const Home = async ({ searchParams }: HomeProps) => {
     //     redirect('/register');
     // }    
 
-    //To check the url's storeid if present inside datanase and if present then fetch it
-    const s = await prisma.teacherCard.findFirst({
-        where: {
-            id: currentUser?.id,
-        }
-    })
-    if(currentUser && !s && currentUser.role !== 'admin'){
-        redirect(`/register`);
-    } 
+    //To check the url's currentuser if present inside database and if present then fetch it
+    // const s = await prisma.teacherCard.findFirst({
+    //     where: {
+    //         id: currentUser?.id,
+    //     }
+    // })
+    // if(currentUser && !s && currentUser.role !== 'admin'){
+    //     redirect(`/register`);
+    // } 
 
     const Profile = faculty.filter((my) => { return (my.id === currentUser?.id) });
     const other = faculty.filter((item) => { return (item.id !== currentUser?.id) });
@@ -55,10 +56,11 @@ const Home = async ({ searchParams }: HomeProps) => {
     return (
 
         <ClientOnly>
+            <Filter/>
             <Container>
                 <div
                     className="
-                        pt-24
+                        pt-6
                         grid 
                         grid-cols-1 
                         sm:grid-cols-2 

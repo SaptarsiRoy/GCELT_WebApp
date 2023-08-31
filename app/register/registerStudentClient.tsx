@@ -4,7 +4,7 @@
 import { MdAlternateEmail, MdLockOutline, MdOutlineCalendarMonth } from "react-icons/md"
 import { HiOutlineUser, HiOutlineDocumentSearch } from "react-icons/hi"
 import { Tb123 } from "react-icons/tb"
-import { BsLinkedin, BsGithub, BsMedium } from "react-icons/bs";
+import { BsLinkedin, BsGithub, BsMedium, BsTrophy } from "react-icons/bs";
 import { FiPhoneCall } from "react-icons/fi";
 import { SiLeetcode } from "react-icons/si";
 import { PiGraduationCapDuotone } from "react-icons/pi";
@@ -25,9 +25,9 @@ import {
 
 // types safety
 import { SafeUser } from "@/app/types";
+import getYear from "@/lib/getYear";
 
 //components
-import Container from "@/app/components/Container";
 import { Input } from "@/app/components/ui/input";
 import { Button } from '@/app/components/ui/button'
 import {
@@ -46,20 +46,49 @@ import {
     SelectValue,
 } from "@/app/components/ui/select"
 import Heading from "@/app/components/ui/Heading";
-import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 import ImageUpload from "@/app/components/modals/ImageUpload";
 
+
+
+
+const currentYear = Number(new Date().getFullYear());
+const courseOptions = ['BTech', 'MTech'] as const;
+const streamOptions = {
+    BTech: ['Computer Science Engineering', 'Information Technology', 'Leather Technology'],
+    MTech: ['Leather Technology'],
+} as const;
+const carrerOptions = ['Higher Studies', 'Job', 'Other Profession'] as const;
 
 const studentRegistration = z.object({
     imageSrc: z.string().url().optional(),
     Name: z.string().min(3), //.optional().transform(e => e === "" ? undefined : e) , // atleast 3 character is required to properly name our store
     email: z.string().email(),
-    RollNo: z.coerce.number().min(11),
-    RegistrationNo: z.coerce.number().min(16),
-    Year: z.coerce.number().min(4),
-    Stream: z.string({
-        required_error: "Please select Stream You are Enrolled in.",
-    }).min(10),
+    RollNo: z.coerce.number({
+        required_error: "Roll No must be of 11 digit",
+    }).optional(),
+    RegistrationNo: z.coerce.number({
+        required_error: "Registration No must be of 16 digit",
+    }).optional(),
+    Year: z.coerce.number().min(4).lte(currentYear),
+    Program: z.enum(courseOptions),
+    Stream: z.enum([...streamOptions.BTech, ...streamOptions.MTech]),
+    SocialLinks: z.object({
+        LinkedInLink: z.string().url().optional(),
+        GitHubLink: z.string().url().optional(),
+        MediumLink: z.string().url().optional(),
+        LeetCodeLink: z.string().url().optional(),
+        PhoneNum: z.string().url().optional(),
+        TwitterLink: z.string().url().optional(),
+        Resume: z.string().url().optional(),
+    }),
+    role:z.string().min(4),
+    About: z.string().optional(),
+    carrer_status: z.enum(carrerOptions),
+    higher_study_degree: z.string().optional(),
+    university: z.string().optional(),
+    job_title: z.string().optional(),
+    company: z.string().optional(),
+    industry: z.string().optional(),
 });
 
 interface ProfileClientProps {
@@ -76,13 +105,22 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
     const form = useForm<z.infer<typeof studentRegistration>>({
         resolver: zodResolver(studentRegistration),
         defaultValues: {
-            imageSrc: "",
+            imageSrc: "https://res.cloudinary.com/dhj5q2qdf/image/upload/v1693400557/demo/j48il0yn2dtuk4fvvblq.png",
             Name: "",
             email: String(currentUser?.email),
             RollNo: 0,
             RegistrationNo: 0,
-            Year: 1999,
-            Stream: "",
+            Year: currentYear,
+            Program: "BTech",
+            // SocialLinks: {
+            //     LinkedInLink: "",
+            //     GitHubLink: "",
+            //     MediumLink: "",
+            //     LeetCodeLink: "",
+            //     PhoneNum: "",
+            // },
+            About: "",
+            role: 'student',
         },
     })
 
@@ -97,6 +135,8 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
 
     const onSubmit = async (data: z.infer<typeof studentRegistration>) => {
         setIsLoading(true);
+        console.log(data);
+        
         await axios.post('/api/listings/student', data)
             .then(() => {
                 toast.success('Updated Successful!');
@@ -109,16 +149,17 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
             .finally(() => {
                 setIsLoading(false);
             })
+        // setIsLoading(false);
     }
 
     return (
-        <Container>
+        <>
             <Form {...form} >
                 <form className="" onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="max-w-screen-lg mx-auto">
                         <div className="grid grid-cols-1 md:grid-cols-8 md:gap-10 mt-6">
 
-                            <div className="col-span-4 flex flex-col gap-4 pr-18">
+                            <div className="col-span-4 flex flex-col gap-3 pr-18">
 
                                 {/*  Div for Avatar and Constant Details */}
                                 <div className="flex flex-row gap-x-20">
@@ -154,11 +195,35 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                                             name="Year"
                                             render={({ field, formState }) => (
                                                 <FormItem className="w-full">
-                                                    <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining</FormLabel>
+                                                    <FormLabel className="flex gap-2 items-center"><MdOutlineCalendarMonth size={18} />Year of Joining *</FormLabel>
                                                     <FormControl>
                                                         {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required type="number" {...field} disabled={isLoading}/>
+                                                        <Input required type="number" {...field} disabled={isLoading} />
                                                     </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="Program"
+                                            render={({ field }) => (
+                                                <FormItem className="w-full">
+                                                    <FormLabel className="flex gap-2 items-center"><PiGraduationCapDuotone size={18} />Degree *</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select a verified email to display" {...field} />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {courseOptions.map((course) => (
+                                                                <SelectItem key={course} value={course}>
+                                                                    {course}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -171,7 +236,62 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                                 <Heading
                                     heading1="Your Social Handles"
                                 />
-
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.LinkedInLink"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className="w-1/2 flex gap-2 items-center"><BsLinkedin size={18} />Linked Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://linkedin.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.GitHubLink"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className="w-1/2 flex gap-2 items-center"><BsGithub size={18} />Github Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://github.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.LeetCodeLink"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className=" w-1/2 flex gap-2 items-center"><SiLeetcode size={18} />LeetCode Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://leetcode.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.MediumLink"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className="w-1/2 flex gap-2 items-center"><BsMedium size={18} />Medium Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://medium.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
                             </div>
                             {/* End of Social Account Section  */}
@@ -189,10 +309,10 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                                         name="Name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="flex gap-3 items-center"><HiOutlineUser size={16} />Name</FormLabel>
+                                                <FormLabel className="flex gap-3 items-center"><HiOutlineUser size={16} />Name *</FormLabel>
                                                 <FormControl>
                                                     {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input type="text" placeholder="Name" {...field} disabled={isLoading}/>
+                                                    <Input type="text" placeholder="Name" {...field} disabled={isLoading} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -204,67 +324,195 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                                         name="email"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="flex gap-3 items-center"><MdAlternateEmail size={16} />Email</FormLabel>
+                                                <FormLabel className="flex gap-3 items-center"><MdAlternateEmail size={16} />Email *</FormLabel>
                                                 <FormControl>
                                                     {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                    <Input type="email" placeholder="johndoe@email.com" {...field} disabled={isLoading}/>
+                                                    <Input type="email" placeholder="johndoe@email.com" {...field} disabled={isLoading} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                    <div className="flex flex-row gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="RollNo"
-                                            render={({ field, formState }) => (
-                                                <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Roll Number</FormLabel>
-                                                    <FormControl>
-                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input required type="number" {...field} disabled={isLoading}/>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="RegistrationNo"
-                                            render={({ field }) => (
-                                                <FormItem className="w-1/2">
-                                                    <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Registration Number</FormLabel>
-                                                    <FormControl>
-                                                        {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
-                                                        <Input type="number" {...field} disabled={isLoading}/>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
+                                    {getYear(form.getValues('Year'))[0] !== 'Alumni' &&                                    
+                                        <div className="flex flex-row gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="RollNo"
+                                                render={({ field, formState }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Roll Number *</FormLabel>
+                                                        <FormControl>
+                                                            {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                            <Input required type="number" {...field} disabled={isLoading} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="RegistrationNo"
+                                                render={({ field }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center"><Tb123 size={22} />Registration Number *</FormLabel>
+                                                        <FormControl>
+                                                            {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                            <Input type="number" {...field} disabled={isLoading} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    }
                                     <FormField
                                         control={form.control}
                                         name="Stream"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="flex gap-2 items-center"><PiGraduationCapDuotone size={18} />Stream</FormLabel>
+                                                <FormLabel className="flex gap-2 items-center"><PiGraduationCapDuotone size={18} />Stream *</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Select a verified email to display" {...field} />
+                                                            <SelectValue placeholder="Select your Stream" {...field} />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="Computer Science Engineering">Computer Science Engineering</SelectItem>
-                                                        <SelectItem value="Information Technology">Information Technology</SelectItem>
-                                                        <SelectItem value="Leather Technology">Leather Technology</SelectItem>
+                                                        {streamOptions[form.getValues('Program')].map((stream) => (
+                                                            <SelectItem key={stream} value={stream}>
+                                                                {stream}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
+                                    <FormField
+                                        control={form.control}
+                                        name="About"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="flex gap-3 items-center"><BsTrophy size={16} />About / Show Case Your Achievements</FormLabel>
+                                                <FormControl>
+                                                    {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                    <Input type="text" placeholder="About You and Achievements" {...field} disabled={isLoading} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    {getYear(form.getValues('Year'))[0] === 'Alumni' && <><Heading
+                                        title="Update About Your Carrer"
+                                    />
+                                        <div className="flex flex-row gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="carrer_status"
+                                                render={({ field }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center">Career Status *</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select Carrer Options" {...field} />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                {carrerOptions.map((options) => (
+                                                                    <SelectItem key={options} value={options}>
+                                                                        {options}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="industry"
+                                                render={({ field }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center">Industry *</FormLabel>
+                                                        <FormControl>
+                                                            {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                            <Input {...field} disabled={isLoading} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        {form.getValues('carrer_status') === 'Higher Studies' ? (
+                                                <div className="flex flex-row gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="higher_study_degree"
+                                                    render={({ field, formState }) => (
+                                                        <FormItem className="w-1/2">
+                                                            <FormLabel className="flex gap-2 items-center">Higher Study Degree *</FormLabel>
+                                                            <FormControl>
+                                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                                <Input {...field} disabled={isLoading} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="university"
+                                                    render={({ field }) => (
+                                                        <FormItem className="w-1/2">
+                                                            <FormLabel className="flex gap-2 items-center">University *</FormLabel>
+                                                            <FormControl>
+                                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                                <Input {...field} disabled={isLoading} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            ):(
+                                                <div className="flex flex-row gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="job_title"
+                                                render={({ field, formState }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center">Job Title</FormLabel>
+                                                        <FormControl>
+                                                            {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                            <Input  {...field} disabled={isLoading} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="company"
+                                                render={({ field }) => (
+                                                    <FormItem className="w-1/2">
+                                                        <FormLabel className="flex gap-2 items-center">Company Name</FormLabel>
+                                                        <FormControl>
+                                                            {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                            <Input  {...field} disabled={isLoading} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                            )
+
+                                        }
+                                    </>
+                                    }
                                 </div>
                             </div>
 
@@ -273,7 +521,7 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                     </div>
                 </form>
             </Form>
-        </Container >
+        </ >
     );
 }
 
