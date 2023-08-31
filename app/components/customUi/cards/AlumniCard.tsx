@@ -39,7 +39,7 @@ import { ConfirmationModal } from "@/app/components/modals/ConfirmationModal";
 
 
 
-interface StudentCardProps {
+interface AlumniCardProps {
     data: SafeStudent;
     onAction?: (id: string, path: string) => void;
     onDeletion?: (id: string, path: string) => void;
@@ -49,7 +49,7 @@ interface StudentCardProps {
     currentUser?: SafeUser | null
 };
 
-const StudentCard: React.FC<StudentCardProps> = ({
+const AlumniCard: React.FC<AlumniCardProps> = ({
     data,
     onAction,
     onDeletion,
@@ -132,7 +132,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
                             </>
                         }
                         {!onAction && <Button variant="ghost" size="sm"
-                                className="dark:text-white font-bold p-0"
+                                className="text-white font-bold p-0"
                                 onClick={() => {}}
                             >
                                 <BsSend size={16} />
@@ -146,7 +146,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
                                     <HiOutlineClock size={18} />
                                 </span>
                                 <div className="font-light text-base">
-                                    {Year} year
+                                    {Year} : {data?.Year + 4}
                                 </div>
                             </div>
                             <div className="flex flex-row items-center gap-1">
@@ -155,7 +155,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
                                     <PiGraduationCapDuotone size={18} />
                                 </span>
                                 <div className="font-light text-base">
-                                    {Sem} Sem
+                                    {Sem}
                                 </div>
                             </div>
                         </div>
@@ -182,13 +182,22 @@ const StudentCard: React.FC<StudentCardProps> = ({
                             {data.email}
                         </div>
                     </div>
-                    <div className="font-semibold pt-2 text-base justify-center">
+                    <div className="font-semibold pt-2 text-sm justify-center">
                         {data.Stream}
                     </div>
-                    <div className="font-semibold text-neutral-500 dark:text-neutral-400 text-sm">
-                        Roll No: {data?.RollNo}
+                    <div className="font-semibold text-neutral-500 dark:text-neutral-300 text-sm">
+                        Carrer Status :  {data?.carrer_status}
                         <br />
-                        Registration No: {data?.RegistrationNo}
+                        {data.carrer_status === 'Higher Studies' ? <>
+                            Degree: {data?.higher_study_degree}
+                            <br/>
+                            University: {data?.university}
+                        </>: <>
+                            Job Title: {data?.job_title}
+                            <br/>
+                            Company: {data?.company}
+                        </>                        
+                        }                        
                     </div>
                 </div>
                 <span className="pt-5 flex flex-col absolute gap-2 right-3 ">
@@ -204,4 +213,4 @@ const StudentCard: React.FC<StudentCardProps> = ({
     );
 }
 
-export default StudentCard;
+export default AlumniCard;

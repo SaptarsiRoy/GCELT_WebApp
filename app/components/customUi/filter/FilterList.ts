@@ -13,27 +13,33 @@ import {PiGraduationCapDuotone} from "react-icons/pi"
 export const categories = [
     {
         label: "1st Year",
+        Additional: 'BTech',
         icon: TbHexagonNumber1,
     },
     {
         label: "2nd Year",
+        Additional: 'BTech',
         icon: TbHexagonNumber2,
     },
     {
         label: "3rd Year",
+        Additional: 'BTech',
         icon: TbHexagonNumber3,
     },
     {
         label: "4th Year",
+        Additional: 'BTech',
         icon: TbHexagonNumber4,
     },
     {
         label: "MTech",
+        Additional: 'MTech',
         icon: TbHexagonLetterM,
         // description: "This property is in the countryside!",
     },
     {
-        label:'Alumn',
+        label:'Alumni',
+        Additional: 'alumni',
         icon:PiGraduationCapDuotone,
     }
 ];

@@ -127,7 +127,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
                                 </>
                             }
                             {!onAction && <Button variant="ghost" size="sm"
-                                className="text-white font-bold p-0"
+                                className="dark:text-white font-bold p-0"
                                 onClick={() => {}}
                             >
                                 <BsSend size={16} />

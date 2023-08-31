@@ -9,6 +9,8 @@ import Container from "@/app/components/Container";
 import EmptyState from "@/app/components/EmptyState";
 import ClientOnly from "@/app/components/ClientOnly";
 import StudentCard from "@/app/components/customUi/cards/StudentCard";
+import AlumniCard from "@/app/components//customUi/cards/AlumniCard";
+import Filter from "@/app/components/customUi/filter/Filter";
 
 // actions
 import getVerifiedStudents, { VerifiedListingParams } from "@/app/actions/getVerifiedStudents";
@@ -44,9 +46,9 @@ const Home = async ({ searchParams }: HomeProps) => {
             id: currentUser?.id,
         }
     })
-    if(currentUser && !s && currentUser.role !== 'admin'){
+    if (currentUser && !s && currentUser.role !== 'admin') {
         redirect(`/register`);
-    } 
+    }
 
     const Profile = students.filter((my) => { return (my.id === currentUser?.id) });
     const other = students.filter((item) => { return (item.id !== currentUser?.id) });
@@ -55,10 +57,11 @@ const Home = async ({ searchParams }: HomeProps) => {
     return (
 
         <ClientOnly>
+            <Filter />
             <Container>
                 <div
                     className="
-                        pt-24
+                        pt-6
                         grid 
                         grid-cols-1 
                         sm:grid-cols-2 
@@ -70,22 +73,38 @@ const Home = async ({ searchParams }: HomeProps) => {
                         "
                 >
                     {Profile.map((studentCard: any) => (
-        				<StudentCard
-        					currentUser={currentUser}
-        					key={studentCard.id}
-        					data={studentCard}
-        				/>))
-        			}
-        			{other.map((studentCard: any) => (
-        				<StudentCard
-        					currentUser={currentUser}
-        					key={studentCard.id}
-        					data={studentCard}
-        				/>))}
-        		</div>
+                        studentCard.role === 'alumni' ? (
+                            <AlumniCard
+                                currentUser={currentUser}
+                                key={studentCard.id}
+                                data={studentCard}
+                            />) : (
+                            <StudentCard
+                                currentUser={currentUser}
+                                key={studentCard.id}
+                                data={studentCard}
+                            />
+                        )
+                    ))
+                    }
+                    {other.map((studentCard: any) => (
+                        studentCard.role === 'alumni' ? (
+                            <AlumniCard
+                                currentUser={currentUser}
+                                key={studentCard.id}
+                                data={studentCard}
+                            />) : (
+                            <StudentCard
+                                currentUser={currentUser}
+                                key={studentCard.id}
+                                data={studentCard}
+                            />
+                        )
+                    ))}
+                </div>
             </Container>
         </ClientOnly>
-        			
+
     )
 }
 

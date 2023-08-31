@@ -1,6 +1,8 @@
-import { StudentCard, TeacherCard , User } from "@prisma/client";
+import { StudentCard, SocialLinks, TeacherCard , User } from "@prisma/client";
 
-export type SafeListing = Omit<StudentCard, "createdAt"> & {
+type safeListing = StudentCard&SocialLinks
+
+export type SafeStudent = Omit<safeListing,"createdAt"> & {
   Year: number,
   createdAt: string;
 };

@@ -2,12 +2,13 @@ import prisma from "@/lib/prismadb";
 
 export interface VerifiedListingParams {
   id: string;
+  role?: string;
   Name?: string;
   email?: string;
   RollNo?: string;
   RegistrationNo?: string;
   Year?: number;
-  Semester?: string;
+  Program?: string;
   Stream?: string;
   verified: Boolean;
 }
@@ -19,11 +20,12 @@ export default async function getVerifiedStudents(
     const {
         id,
         Name,
+        role,
         email,
         RollNo,
         RegistrationNo,
         Year,
-        Semester,
+        Program,
         Stream,
         verified,
     } = params;
@@ -32,6 +34,9 @@ export default async function getVerifiedStudents(
    // to check whether
     if (id) {
       query.id = id;
+    }
+    if(role){
+      query.role = role;
     }
     if (Name) {
       query.Name = {contains: Name, mode: 'insensitive'};
@@ -45,11 +50,11 @@ export default async function getVerifiedStudents(
     if (RegistrationNo) {
       query.RegistrationNo = {contains: RegistrationNo, mode: 'insensitive'};
     }
-    if (Semester) {
-      query.Semester = Semester;
+    if (Program) {
+      query.Program = Program;
     }
     if (Stream) {
-      query.Name = Name;
+      query.Stream = Stream;
     }
     if (Year) {
       query.Year = Number(Year);

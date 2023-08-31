@@ -1,7 +1,7 @@
 "use client";
 
 // import Category List
-import {categories, SearchFilter} from "./FilterList"
+import { categories, SearchFilter } from "./FilterList"
 
 // icons
 import { BsSliders } from "react-icons/bs";
@@ -31,7 +31,7 @@ const Filter = () => {
     const pathname = usePathname();
     // const isMainPage = pathname === "/";
     // const isFacultyPage = pathname === "/faculty";
-    
+
     // //restriting to first page only . This can create too many hooks rendering issue
     // if (!isMainPage && !isFacultyPage) {
     //     return null;
@@ -46,9 +46,9 @@ const Filter = () => {
     const [value, setValue] = useState("");
 
 
-    const handleClick = useCallback((Yr:String) => {
+    const handleClick = useCallback((Yr: String, Add: String) => {
         const now = new Date();
-        const Year = String( now.getFullYear() - Number(Yr) + 1);
+        const Year = String(now.getFullYear() - Number(Yr) + 1);
         // initialize a currentquery with empty object
         let currentQuery = {};
         if (params) {
@@ -56,15 +56,35 @@ const Filter = () => {
         }
 
         // the category param going to combine with all other params in url
-        const updatedQuery: any = {
-            ...currentQuery,
-            Year: Year
+        var updatedQuery: any
+        if (Add === 'BTech') {
+            updatedQuery = { ...currentQuery, Year: Year, Program: Add }
+        }
+        else if (Add === 'MTech') {
+            updatedQuery = { ...currentQuery, Program: Add }
+        }
+        else if (Add === 'alumni') {
+            updatedQuery = { ...currentQuery, role: Add }
         }
 
         // if we selected a category again , then we simply want to remove it from params
         // if already selected and once i select it again , then remove category from params
-        if (params?.get('Year') === Year) {
+        if (Add === 'BTech') {
+            if (params?.get('Year') === Year && params?.get('Program') === Add) {
+                delete updatedQuery.Year;
+                delete updatedQuery.Program;
+                delete updatedQuery.role;
+            }
+        }
+        else if (params?.get('Program') === Add) {
             delete updatedQuery.Year;
+            delete updatedQuery.Program;
+            delete updatedQuery.role;
+        }
+        else if (params?.get('role') === Add) {
+            delete updatedQuery.Year;
+            delete updatedQuery.Program;
+            delete updatedQuery.role;
         }
 
         // generate the url alomg with updation
@@ -109,12 +129,11 @@ const Filter = () => {
         const params = new URLSearchParams(window.location.search);
         params.forEach((value, key) => {
             console.log(value, key);
-            if(SearchFilter.includes({label:key , value:key}))
-            {
+            if (SearchFilter.includes({ label: key, value: key })) {
                 const searchQuery = params.get(key) ?? "";
                 setfilterValue(key);
                 setInputValue(searchQuery);
-            } 
+            }
         });
     }, []); // Pass this empty string so that we can run it once for intital stage only
     // when we mounting a component
@@ -152,7 +171,7 @@ const Filter = () => {
                 {/* Mapping the yearwise categories  */}
                 {categories.map((item) => (
                     <div key={item.label}
-                        onClick={() => handleClick(item.label.charAt(0))}
+                        onClick={() => handleClick(item.label.charAt(0), item.Additional)}
                         className={`
                             flex flex-col items-center justify-center gap-2
                             p-1  pb-3  border-b-0  transition  cursor-pointer
@@ -195,21 +214,21 @@ const Filter = () => {
                                                 setOpen(false)
                                             }}
                                         >
-                                            <Check className={cn("mr-2 h-4 w-4", value === filter.value ? "opacity-100" : "opacity-0")}/>
+                                            <Check className={cn("mr-2 h-4 w-4", value === filter.value ? "opacity-100" : "opacity-0")} />
                                             {filter.label}
                                         </CommandItem>
                                     ))}
-                                </CommandGroup>                                
+                                </CommandGroup>
                             </Command>
                         </PopoverContent>
                     </Popover>
 
                     <Input id="Search bar"
-                    placeholder="Search Here"
-                    type="search"
-                    value={inputValue}
-                    onChange={(e) => {setInputValue(e.target.value);}} 
-                    className="rounded-r-full"
+                        placeholder="Search Here"
+                        type="search"
+                        value={inputValue}
+                        onChange={(e) => { setInputValue(e.target.value); }}
+                        className="rounded-r-full"
                     />
 
                 </div>

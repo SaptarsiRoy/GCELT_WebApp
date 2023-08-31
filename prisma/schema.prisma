@@ -62,7 +62,7 @@ model StudentCard {
   Stream          String
   About           String?
   socialLinks     SocialLinks?
-  employment_status  String?
+  carrer_status  String?
   higher_study_degree String?
   university     String?
   job_title      String?

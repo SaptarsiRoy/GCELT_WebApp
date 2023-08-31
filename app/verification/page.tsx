@@ -12,43 +12,43 @@ import VerificationClient from "./VerificationClient";
 
 
 interface VerifyProps {
-  searchParams: NotVerifiedListingParams
+    searchParams: NotVerifiedListingParams
 };
 
 const VerifyPage = async ({ searchParams }: VerifyProps) => {
-  const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser();
 
-  if (!currentUser || currentUser.role !=="admin") {
+    if (!currentUser || currentUser.role !== "admin") {
+        return (
+            <ClientOnly>
+                <EmptyState
+                    title="Unauthorized"
+                    subtitle="Please login"
+                />
+            </ClientOnly>
+        );
+    }
+
+    const registration = await getNotVerifiedUser(searchParams);
+    if (registration.length === 0) {
+        return (
+            <ClientOnly>
+                <EmptyState
+                    title="No Students found"
+                    subtitle="Looks like No Registration recently."
+                />
+            </ClientOnly>
+        );
+    }
+
     return (
-      <ClientOnly>
-        <EmptyState
-          title="Unauthorized"
-          subtitle="Please login"
-        />
-      </ClientOnly>
+        <ClientOnly>
+            <VerificationClient
+                verification={registration}
+                currentUser={currentUser}
+            />
+        </ClientOnly>
     );
-  }
-
-  const registration = await getNotVerifiedUser(searchParams);
-  if (registration.length === 0) {
-    return (
-      <ClientOnly>
-        <EmptyState
-          title="No Students found"
-          subtitle="Looks like No Registration recently."
-        />
-      </ClientOnly>
-    );
-  }
-
-  return (
-    <ClientOnly>
-      <VerificationClient
-        verification={registration}
-        currentUser={currentUser}
-      />
-    </ClientOnly>
-  );
 }
- 
+
 export default VerifyPage;

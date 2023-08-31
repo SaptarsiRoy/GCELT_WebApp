@@ -6,7 +6,7 @@ import { HiOutlineUser, HiOutlineDocumentSearch } from "react-icons/hi"
 import { Tb123 } from "react-icons/tb"
 import { BsLinkedin, BsGithub, BsMedium, BsTrophy } from "react-icons/bs";
 import { FiPhoneCall } from "react-icons/fi";
-import { SiLeetcode } from "react-icons/si";
+import { SiLeetcode, SiTwitter } from "react-icons/si";
 import { PiGraduationCapDuotone } from "react-icons/pi";
 
 // Global import 
@@ -81,7 +81,6 @@ const studentRegistration = z.object({
         TwitterLink: z.string().url().optional(),
         Resume: z.string().url().optional(),
     }),
-    role:z.string().min(4),
     About: z.string().optional(),
     carrer_status: z.enum(carrerOptions),
     higher_study_degree: z.string().optional(),
@@ -120,7 +119,6 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
             //     PhoneNum: "",
             // },
             About: "",
-            role: 'student',
         },
     })
 
@@ -284,6 +282,34 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
                                     render={({ field }) => (
                                         <FormItem className="w-full flex flex-row gap-2">
                                             <FormLabel className="w-1/2 flex gap-2 items-center"><BsMedium size={18} />Medium Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://medium.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.TwitterLink"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className="w-1/2 flex gap-2 items-center"><SiTwitter size={18} />Twitter Account</FormLabel>
+                                            <FormControl>
+                                                {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
+                                                <Input type="url" placeholder="https://medium.com" {...field} disabled={isLoading} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="SocialLinks.Resume"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full flex flex-row gap-2">
+                                            <FormLabel className="w-1/2 flex gap-2 items-center"><HiOutlineDocumentSearch size={18} />Your Resume / CV</FormLabel>
                                             <FormControl>
                                                 {/* Spread onBlur , onChange , value , name , ref by using ...field , and thus we handle all those fields*/}
                                                 <Input type="url" placeholder="https://medium.com" {...field} disabled={isLoading} />
