@@ -104,7 +104,7 @@ const RegisterStudentClient: React.FC<ProfileClientProps> = ({
     const form = useForm<z.infer<typeof studentRegistration>>({
         resolver: zodResolver(studentRegistration),
         defaultValues: {
-            imageSrc: "https://res.cloudinary.com/dhj5q2qdf/image/upload/v1693400557/demo/j48il0yn2dtuk4fvvblq.png",
+            imageSrc: "",
             Name: "",
             email: String(currentUser?.email),
             RollNo: 0,

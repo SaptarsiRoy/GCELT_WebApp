@@ -18,37 +18,37 @@ export default async function getVerifiedStudents(
 ) {
   try {
     const {
-        id,
-        Name,
-        role,
-        email,
-        RollNo,
-        RegistrationNo,
-        Year,
-        Program,
-        Stream,
-        verified,
+      id,
+      Name,
+      role,
+      email,
+      RollNo,
+      RegistrationNo,
+      Year,
+      Program,
+      Stream,
+      verified,
     } = params;
 
     let query: any = {};
-   // to check whether
+    // to check whether
     if (id) {
       query.id = id;
     }
-    if(role){
+    if (role) {
       query.role = role;
     }
     if (Name) {
-      query.Name = {contains: Name, mode: 'insensitive'};
+      query.Name = { contains: Name, mode: 'insensitive' };
     }
     if (email) {
-      query.email = {contains: email, mode: 'insensitive'};;
+      query.email = { contains: email, mode: 'insensitive' };;
     }
     if (RollNo) {
-      query.RollNo = {contains: RollNo, mode: 'insensitive'};
+      query.RollNo = { contains: RollNo, mode: 'insensitive' };
     }
     if (RegistrationNo) {
-      query.RegistrationNo = {contains: RegistrationNo, mode: 'insensitive'};
+      query.RegistrationNo = { contains: RegistrationNo, mode: 'insensitive' };
     }
     if (Program) {
       query.Program = Program;
@@ -65,16 +65,40 @@ export default async function getVerifiedStudents(
 
 
     const studentlist = await prisma.studentCard.findMany({
-      where: {AND: [query, {verified:true}] },
+      where: { AND: [query, { verified: true }] },
       orderBy: {
         Name: 'asc'
       }
     });
 
-    const safeListings = studentlist.map((studentCard) => ({
-      ...studentCard,
-      createdAt: studentCard.createdAt.toISOString(),
-    }));
+    // const safeListings = studentlist.map((studentCard) => ({
+    //   const mySocialLinks = await prisma.socialLinks.findUnique({
+    //     where: {
+    //       studentId: studentCard.id,
+    //     },
+    //   }),
+    //   ...studentCard,
+    //   ...mySocialLinks,
+    //   createdAt: studentCard.createdAt.toISOString(),
+    // }));
+
+    const safeListings = await Promise.all(
+      studentlist.map(async (studentCard) => {
+        const mySocialLinks = await prisma.socialLinks.findUnique({
+          where: {
+            studentId: studentCard.id,
+          },
+        });
+    
+
+    
+        return {
+          ...studentCard,
+          ...mySocialLinks,
+          createdAt: studentCard.createdAt.toISOString(),
+        };
+      })
+    );
 
     return safeListings;
   } catch (error: any) {

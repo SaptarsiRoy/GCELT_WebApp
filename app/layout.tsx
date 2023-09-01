@@ -12,6 +12,7 @@ import AuthContextProvider from '@/providers/AuthContextProvider'
 // services
 import getCurrentUser from "@/app/actions/getCurrentUser"
 import LogInModal from "./components/modals/LoginModal";
+import Feedback from "./components/Feedback";
 
 
 
@@ -39,6 +40,7 @@ export default async function RootLayout({
                         <ToasterProvider />
                         <ModalProvider />
                         <Navbar currentUser={currentUser} />
+                        <Feedback/>
                     </ClientOnly>
                     <div className="pb-20 pt-28">{children}</div>
                 </body>

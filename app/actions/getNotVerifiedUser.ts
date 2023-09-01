@@ -79,6 +79,24 @@ export default async function getNotVerifiedUser(
                 createdAt: 'desc'
             }
         });
+
+        const NotVerifiedStudentwithSocial = await Promise.all(
+            NotVerifiedStudent.map(async (studentCard) => {
+              const mySocialLinks = await prisma.socialLinks.findUnique({
+                where: {
+                  studentId: studentCard.id,
+                },
+              });         
+      
+          
+              return {
+                ...studentCard,
+                ...mySocialLinks,
+              };
+            })
+          );
+
+
         const NotVerifiedfaculty = await prisma.teacherCard.findMany({
             where: { AND: [query, { verified: false }] },
             orderBy: {
@@ -86,7 +104,7 @@ export default async function getNotVerifiedUser(
             }
         });
 
-        const mergedList = [...NotVerifiedStudent, ...NotVerifiedfaculty].sort((a, b) =>
+        const mergedList = [...NotVerifiedStudentwithSocial, ...NotVerifiedfaculty].sort((a, b) =>
             b.createdAt.getTime() - a.createdAt.getTime()
         );
 

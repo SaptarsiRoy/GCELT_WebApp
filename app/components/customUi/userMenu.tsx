@@ -1,8 +1,21 @@
 'use client';
 //icons
-import { Settings, LogIn, LogOut, Menu, UserPlus2, CalendarCheck } from "lucide-react";
+import {
+    Settings,
+    LogIn,
+    LogOut,
+    Menu,
+    UserPlus2,
+    CalendarCheck,
+    ThumbsUp,
+    ThumbsDown
+} from "lucide-react";
 import { TbCircleFilled } from "react-icons/tb";
-import { PiStudentBold , PiExamDuotone , PiChalkboardTeacherDuotone } from "react-icons/pi"
+import {
+    PiStudentBold,
+    PiExamDuotone,
+    PiChalkboardTeacherDuotone
+} from "react-icons/pi"
 
 
 // Global import
@@ -65,11 +78,11 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                         <div className="flex flex-row justify-between items-center gap-2">
                             <TbCircleFilled className="text-green-500" />Admin Portal
                         </div>
-                    ) : currentUser.role === "teacher"? (
+                    ) : currentUser.role === "teacher" ? (
                         <div className="flex flex-row justify-between items-center gap-2">
                             <TbCircleFilled className="text-green-500" />Faculty Portal
                         </div>
-                    ) :(
+                    ) : (
                         <div className="flex flex-row justify-between items-center gap-2">
                             <TbCircleFilled className="text-green-500" />Student Portal
                         </div>
@@ -177,7 +190,11 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                                     </DropdownMenuItem></>
                             )
                             }
-
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLScdBCKp4Zx-I4XCfS0LW7jJkegTPzo1HWmdOv_yS6DxjRXMqw/viewform?usp=sf_link','_blank')}>
+                                <><ThumbsUp className="h-4 w-4" /><ThumbsDown className="mr-2 h-4 w-4" /></>
+                                Report / Feedback
+                            </DropdownMenuItem>
                         </DropdownMenuGroup>
 
                         <DropdownMenuSeparator />

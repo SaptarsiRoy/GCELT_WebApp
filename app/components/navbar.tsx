@@ -9,7 +9,6 @@ import Container from "@/app/components/Container";
 import { NavMenu } from "@/app/components/customUi/navMenu";
 import  UserMenu   from "@/app/components/customUi/userMenu";
 import Logo from "./customUi/Logo";
-import Filter from "./customUi/filter/Filter";
 
 
 

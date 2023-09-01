@@ -44,13 +44,14 @@ const GenerateAccessModal = () => {
     // state to control is copied icon visibility   
     const [copied, setCopied] = useState(false);
     //state to control children/ text to be 
-    const [children, _] = useState<any>(accessModal.accessCode);
+    const [children, _] = useState<string>(accessModal.accessCode);
     
-
+    //TODO:  Need to correct here
     const handleCopyToClipboard = () => {
         console.log("children:",children);
         
-        navigator.clipboard.writeText(children);
+        // navigator.clipboard.writeText(children);
+        navigator.clipboard.writeText(accessModal.accessCode);
         setCopied(true);
     };
 

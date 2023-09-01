@@ -21,6 +21,11 @@ import { Button } from "@/app/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/app/components/ui/avatar";
 
 
+
+            const [assignRoleId, setAssignRoleId] = useState("");
+            const [isLoading, setIsLoading] = useState(false);
+            const router = useRouter();
+
 // We need to specify Coloumns name and also specify how rows renders
 export const columns: ColumnDef<SafeUser>[] = [
     // checkbox
@@ -124,10 +129,6 @@ export const columns: ColumnDef<SafeUser>[] = [
         ),
         cell: ({ row }) => {
             const user = row.original
-            const [assignRoleId, setAssignRoleId] = useState("");
-            const [isLoading, setIsLoading] = useState(false);
-            const router = useRouter();
-
             const onAssign = useCallback(
                 (id: string, role: string) => {
                     setAssignRoleId(id);

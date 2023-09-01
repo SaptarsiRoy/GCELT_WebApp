@@ -201,11 +201,11 @@ const AlumniCard: React.FC<AlumniCardProps> = ({
                     </div>
                 </div>
                 <span className="pt-5 flex flex-col absolute gap-2 right-3 ">
-                    <LinkDialog title="Phone Number" description="copy" icons={<FiPhoneCall size={16} />}>Link</LinkDialog>
-                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16} />} />
-                    <LinkDialog title="Github Account" description="copy" icons={<BsGithub size={16} />} />
-                    <LinkDialog title="Leetcode Account" description="copy" icons={<SiLeetcode size={16} />} />
-                    <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />} />
+                <LinkDialog title="Phone Number" description="copy" icons={<FiPhoneCall size={16} />}>{data?.phoneNum}</LinkDialog>
+                    <LinkDialog title="LinkedIn Account" description="copy" icons={<BsLinkedin size={16} />}>{data?.linkedInLink}</LinkDialog>
+                    <LinkDialog title="Github Account" description="copy" icons={<BsGithub size={16} />}>{data?.githubLink}</LinkDialog>
+                    <LinkDialog title="Leetcode Account" description="copy" icons={<SiLeetcode size={16} />}>{data?.leetCodeLink}</LinkDialog>
+                    <LinkDialog title="Resume / CV" description="copy" icons={<HiOutlineDocumentSearch size={18} />} >{data?.resume}</LinkDialog>
 
                 </span>
             </CardFooter>
